@@ -1,0 +1,61 @@
+{% extends 'public/base_cpanel.html' %}
+{% block title %}Lista de Clientes{% endblock %}
+{% block body %}
+{% if (clientes) %}
+<div class="card content_consignaciones" style="border-radius: 0px !important">
+  <section id="respuestaFiltroMes">
+    <h2 class="text-center mt-5 mb-5">
+      Lista de Clientes
+      <hr />
+    </h2>
+    <div class="table-responsive text-nowrap">
+      <table class="table table-hover">
+        <thead>
+          <tr style="background-color: #ddd">
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Dirección</th>
+            <th>Teléfono</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for cliente in clientes %}
+          <tr>
+            <td>{{ cliente.id }}</td>
+            <td>{{ cliente.name }}</td>
+            <td>{{ cliente.address }}</td>
+            <td>{{ cliente.phone }}</td>
+            <td>
+              <a href="/editar-cliente/{{ cliente.id }}" class="btn btn-success btn-sm">Editar</a>
+              <button class="btn rounded-pill btn-danger" onclick="eliminarCliente('{{ cliente.id }}');">Eliminar</button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+{% else %}
+<div class="container mt-3 mb-3" style="width: 100% !important">
+  <div class="row justify-content-md-center mb-2">
+    <div class="col-12">
+      <h2 class="text-center">No hay clientes 😭</h2>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
+{% block customJS %}
+<script>
+  function eliminarCliente(id) {
+    if (confirm("¿Estás seguro que deseas eliminar el cliente?")) {
+      let url = `/borrar-cliente/${id}`;
+      if (url) {
+        window.location.href = url;
+      }
+    }
+  }
+</script>
+{% endblock %}

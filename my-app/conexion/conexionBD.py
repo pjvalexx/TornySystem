@@ -10,7 +10,7 @@ def connectionBD():
         connection = mysql.connector.connect(
             host="localhost",
             user="root",
-            port="3307",
+            port="3306",
             passwd="",
             database="crud_python",
             charset='utf8mb4',

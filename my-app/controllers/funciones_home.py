@@ -1,4 +1,3 @@
-
 # Para subir archivo tipo foto al servidor
 from werkzeug.utils import secure_filename
 import uuid  # Modulo de python para crear un string
@@ -342,7 +341,7 @@ def lista_usuariosBD():
     try:
         with connectionBD() as conexion_MySQLdb:
             with conexion_MySQLdb.cursor(dictionary=True) as cursor:
-                querySQL = "SELECT id, name_surname, email_user, created_user FROM users"
+                querySQL = "SELECT id, name_surname, email_user, created_user, role_id FROM users"
                 cursor.execute(querySQL,)
                 usuariosBD = cursor.fetchall()
         return usuariosBD
@@ -389,4 +388,77 @@ def eliminarUsuario(id):
         return resultado_eliminar
     except Exception as e:
         print(f"Error en eliminarUsuario : {e}")
+        return []
+
+
+def procesar_form_cliente(dataForm):
+    try:
+        with connectionBD() as conexion_MySQLdb:
+            with conexion_MySQLdb.cursor(dictionary=True) as cursor:
+                sql = """
+                    INSERT INTO clients (name, address, phone)
+                    VALUES (%s, %s, %s)
+                """
+                valores = (
+                    dataForm['name'],
+                    dataForm['address'],
+                    dataForm['phone']
+                )
+                cursor.execute(sql, valores)
+                conexion_MySQLdb.commit()
+                return cursor.rowcount
+    except Exception as e:
+        print(f"Error en procesar_form_cliente: {e}")
+        return []
+
+def obtenerClientes():
+    try:
+        with connectionBD() as conexion_MySQLdb:
+            with conexion_MySQLdb.cursor(dictionary=True) as cursor:
+                querySQL = "SELECT id, name, address, phone FROM clients"
+                cursor.execute(querySQL)
+                clientes = cursor.fetchall()
+        return clientes
+    except Exception as e:
+        print(f"Error en obtenerClientes: {e}")
+        return []
+
+def procesar_form_orden(dataForm):
+    try:
+        with connectionBD() as conexion_MySQLdb:
+            with conexion_MySQLdb.cursor(dictionary=True) as cursor:
+                sql = """
+                    INSERT INTO work_orders (client_id, service_type, description, delivery_date, materials, amount, status)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                """
+                valores = (
+                    dataForm['client_id'],
+                    dataForm['service_type'],
+                    dataForm['description'],
+                    dataForm['delivery_date'],
+                    dataForm['materials'],
+                    dataForm['amount'],
+                    dataForm['status']
+                )
+                cursor.execute(sql, valores)
+                conexion_MySQLdb.commit()
+                return cursor.rowcount
+    except Exception as e:
+        print(f"Error en procesar_form_orden: {e}")
+        return []
+
+def obtenerOrdenes():
+    try:
+        with connectionBD() as conexion_MySQLdb:
+            with conexion_MySQLdb.cursor(dictionary=True) as cursor:
+                querySQL = """
+                    SELECT wo.id, c.name AS client_name, wo.service_type, wo.description, wo.delivery_date, wo.materials, wo.amount, wo.status
+                    FROM work_orders wo
+                    JOIN clients c ON wo.client_id = c.id
+                """
+                cursor.execute(querySQL)
+                ordenes = cursor.fetchall()
+        return ordenes
+    except Exception as e:
+        print(f"Error en obtenerOrdenes: {e}")
         return []

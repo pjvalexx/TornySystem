@@ -1,4 +1,3 @@
-
 from app import app
 from flask import render_template, request, flash, redirect, url_for, session
 
@@ -119,6 +118,7 @@ def loginCliente():
                     session['id'] = account['id']
                     session['name_surname'] = account['name_surname']
                     session['email_user'] = account['email_user']
+                    session['role_id'] = account['role_id']  # Asegúrate de guardar el role_id en la sesión
 
                     flash('la sesión fue correcta.', 'success')
                     return redirect(url_for('inicio'))

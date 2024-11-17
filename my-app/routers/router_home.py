@@ -93,11 +93,14 @@ def actualizarEmpleado():
 @app.route("/lista-de-usuarios", methods=['GET'])
 def usuarios():
     if 'conectado' in session:
-        resp_usuariosBD = lista_usuariosBD()
-        return render_template('public/usuarios/lista_usuarios.html', resp_usuariosBD=resp_usuariosBD)
+        if session.get('role_id') == 1:  # Verificar si el usuario es administrador
+            resp_usuariosBD = lista_usuariosBD()
+            return render_template('public/usuarios/lista_usuarios.html', resp_usuariosBD=resp_usuariosBD)
+        else:
+            flash('No tienes permiso para acceder a esta página.', 'error')
+            return redirect(url_for('inicio'))
     else:
-        return redirect(url_for('inicioCpanel'))
-
+        return redirect(url_for('inicio'))
 
 @app.route('/borrar-usuario/<string:id>', methods=['GET'])
 def borrarUsuario(id):
@@ -121,4 +124,88 @@ def reporteBD():
         return generarReporteExcel()
     else:
         flash('primero debes iniciar sesión.', 'error')
+        return redirect(url_for('inicio'))
+
+
+@app.route('/asignar-rol', methods=['POST'])
+def asignarRol():
+    if 'conectado' in session and session.get('role_id') == 1:  # Verificar si el usuario es administrador
+        user_id = request.form['user_id']
+        role_id = request.form['role_id']
+        try:
+            with connectionBD() as conexion_MySQLdb:
+                with conexion_MySQLdb.cursor(dictionary=True) as cursor:
+                    querySQL = "UPDATE users SET role_id = %s WHERE id = %s"
+                    cursor.execute(querySQL, (role_id, user_id))
+                    conexion_MySQLdb.commit()
+                    flash('El rol fue asignado correctamente.', 'success')
+        except Exception as e:
+            flash(f"Error al asignar el rol: {e}", 'error')
+        return redirect(url_for('usuarios'))
+    else:
+        flash('No tienes permiso para realizar esta acción.', 'error')
+        return redirect(url_for('inicio'))
+
+
+@app.route('/registrar-orden', methods=['GET'])
+def viewFormOrden():
+    if 'conectado' in session:
+        clientes = obtenerClientes()
+        return render_template('public/ordenes/form_orden.html', clientes=clientes)
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('inicio'))
+
+@app.route('/form-registrar-orden', methods=['POST'])
+def formOrden():
+    if 'conectado' in session:
+        resultado = procesar_form_orden(request.form)
+        if resultado:
+            flash('La orden de trabajo fue registrada correctamente.', 'success')
+            return redirect(url_for('lista_ordenes'))
+        else:
+            flash('La orden de trabajo NO fue registrada.', 'error')
+            return render_template('public/ordenes/form_orden.html')
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('inicio'))
+
+@app.route('/lista-de-ordenes', methods=['GET'])
+def lista_ordenes():
+    if 'conectado' in session:
+        ordenes = obtenerOrdenes()
+        return render_template('public/ordenes/lista_ordenes.html', ordenes=ordenes)
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('inicio'))
+
+@app.route('/registrar-cliente', methods=['GET'])
+def viewFormCliente():
+    if 'conectado' in session:
+        return render_template('public/clientes/form_cliente.html')
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('inicio'))
+
+@app.route('/form-registrar-cliente', methods=['POST'])
+def formCliente():
+    if 'conectado' in session:
+        resultado = procesar_form_cliente(request.form)
+        if resultado:
+            flash('El cliente fue registrado correctamente.', 'success')
+            return redirect(url_for('lista_clientes'))
+        else:
+            flash('El cliente NO fue registrado.', 'error')
+            return render_template('public/clientes/form_cliente.html')
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('inicio'))
+
+@app.route('/lista-de-clientes', methods=['GET'])
+def lista_clientes():
+    if 'conectado' in session:
+        clientes = obtenerClientes()
+        return render_template('public/clientes/lista_clientes.html', clientes=clientes)
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))

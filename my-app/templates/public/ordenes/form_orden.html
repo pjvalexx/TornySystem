@@ -1,0 +1,71 @@
+{% extends 'public/base_cpanel.html' %}
+{% block title %}Crear Orden de Trabajo{% endblock %}
+{% block body %}
+<div class="card" style="border-radius: 0px !important">
+  <div class="row justify-content-center mb-2">
+    <div class="col-md-12">
+      <h3 class="text-center mt-5 mb-3">CREAR ORDEN DE TRABAJO</h3>
+      <hr />
+    </div>
+  </div>
+  <div class="row justify-content-center mb-2">
+    <div class="col-md-10">
+      <form class="form-horizontal mx-auto" method="POST" action="/form-registrar-orden" autocomplete="off">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <label for="client_id" class="form-label">Cliente</label>
+              <select name="client_id" class="form-select" required>
+                {% for cliente in clientes %}
+                <option value="{{ cliente.id }}">{{ cliente.name }} - {{ cliente.address }} - {{ cliente.phone }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label for="service_type" class="form-label">Tipo de Servicio</label>
+              <select name="service_type" class="form-select" required>
+                <option value="Fabricacion">Fabricación</option>
+                <option value="Rectificacion">Rectificación</option>
+                <option value="Reparacion">Reparación</option>
+              </select>
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-md-12">
+              <label for="description" class="form-label">Descripción</label>
+              <textarea name="description" class="form-control" rows="3" required></textarea>
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-md-6">
+              <label for="delivery_date" class="form-label">Fecha de Entrega</label>
+              <input type="date" name="delivery_date" class="form-control" required />
+            </div>
+            <div class="col-md-6">
+              <label for="materials" class="form-label">Materiales</label>
+              <input type="text" name="materials" class="form-control" required />
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-md-6">
+              <label for="amount" class="form-label">Monto</label>
+              <input type="number" name="amount" class="form-control" required />
+            </div>
+            <div class="col-md-6">
+              <label for="status" class="form-label">Estado</label>
+              <select name="status" class="form-select" required>
+                <option value="Pendiente">Pendiente</option>
+                <option value="En Proceso">En Proceso</option>
+                <option value="Completado">Completado</option>
+              </select>
+            </div>
+          </div>
+          <div class="mb-3 mt-4 text-center">
+            <button type="submit" class="btn rounded-pill btn-primary">Guardar Orden</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
