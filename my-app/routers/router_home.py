@@ -159,7 +159,9 @@ def viewFormOrden():
 @app.route('/form-registrar-orden', methods=['POST'])
 def formOrden():
     if 'conectado' in session:
-        resultado = procesar_form_orden(request.form)
+        dataForm = request.form.to_dict()
+        dataForm['status'] = 'Pendiente'  # Establecer el estado por defecto como "Pendiente"
+        resultado = procesar_form_orden(dataForm)
         if resultado:
             flash('La orden de trabajo fue registrada correctamente.', 'success')
             return redirect(url_for('lista_ordenes'))
@@ -174,7 +176,28 @@ def formOrden():
 def lista_ordenes():
     if 'conectado' in session:
         ordenes = obtenerOrdenes()
-        return render_template('public/ordenes/lista_ordenes.html', ordenes=ordenes)
+        # Asegúrate de que todas las órdenes tengan un estado válido
+        for orden in ordenes:
+            if orden['status'] is None:
+                orden['status'] = 'Pendiente'
+        # Contar las órdenes por estado
+        estados = {
+            'Pendiente': len([o for o in ordenes if o['status'] == 'Pendiente']),
+            'En Proceso': len([o for o in ordenes if o['status'] == 'En Proceso']),
+            'Completado': len([o for o in ordenes if o['status'] == 'Completado']),
+            'Entregado': len([o for o in ordenes if o['status'] == 'Entregado']),
+            'Cancelado': len([o for o in ordenes if o['status'] == 'Cancelado'])
+        }
+        return render_template('public/ordenes/lista_ordenes.html', ordenes=ordenes, estados=estados)
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('inicio'))
+
+@app.route('/gestionar-ordenes', methods=['GET'])
+def gestionar_ordenes():
+    if 'conectado' in session:
+        ordenes = obtenerOrdenes()
+        return render_template('public/ordenes/gestionar_ordenes.html', ordenes=ordenes)
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))

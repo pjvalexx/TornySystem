@@ -234,3 +234,19 @@ tbody tr:hover {
   min-width: 44% !important;
   background-color: #f3efef !important;
 }
+
+.bg-warning {
+  background-color: #ffc107 !important;
+}
+.bg-orange {
+  background-color: #fd7e14 !important;
+}
+.bg-primary {
+  background-color: #007bff !important;
+}
+.bg-success {
+  background-color: #28a745 !important;
+}
+.bg-danger {
+  background-color: #dc3545 !important;
+}

@@ -15,6 +15,9 @@
   </div>
   <div class="menu-inner-shadow"></div>
   <ul class="menu-inner py-5">
+    <li class="menu-header small text-uppercase">
+      <span class="menu-header-text">Órdenes de Trabajo</span>
+    </li>
     <li class="menu-item {% if request.path == '/registrar-orden' %} active {% endif %}">
       <a href="{{ url_for('viewFormOrden') }}" class="menu-link">
         <i class="menu-icon bi bi-person-bounding-box"></i>
@@ -24,8 +27,18 @@
     <li class="menu-item {% if request.path == '/lista-de-ordenes' %} active{% endif %}">
       <a href="{{ url_for('lista_ordenes') }}" class="menu-link">
         <i class="menu-icon bi bi-list-task"></i>
-        <div data-i18n="Boxicons">Lista de Órdenes de Trabajo</div>
+        <div data-i18n="Boxicons">Listar Órdenes de Trabajo</div>
       </a>
+    </li>
+    <li class="menu-item {% if request.path == '/gestionar-ordenes' %} active{% endif %}">
+      <a href="{{ url_for('gestionar_ordenes') }}" class="menu-link">
+        <i class="menu-icon bi bi-gear"></i>
+        <div data-i18n="Boxicons">Gestionar Órdenes de Trabajo</div>
+      </a>
+    </li>
+    <!-- Otras opciones del menú -->
+    <li class="menu-header small text-uppercase">
+      <span class="menu-header-text">Clientes</span>
     </li>
     <li class="menu-item {% if request.path == '/registrar-cliente' %} active {% endif %}">
       <a href="{{ url_for('viewFormCliente') }}" class="menu-link">
@@ -39,7 +52,6 @@
         <div data-i18n="Boxicons">Lista de Clientes</div>
       </a>
     </li>
-    <!-- Otras opciones del menú -->
     <li class="menu-item {% if request.path == '/lista-de-usuarios' %} active {% endif %}">
       <a href="{{ url_for('usuarios') }}" class="menu-link">
         <i class="menu-icon bi bi-person-lines-fill"></i>

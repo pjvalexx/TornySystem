@@ -79,7 +79,7 @@ CREATE TABLE work_orders (
     delivery_date DATE NOT NULL,
     materials TEXT NOT NULL,
     amount DECIMAL(10, 2) NOT NULL,
-    status ENUM('Pendiente', 'En Proceso', 'Completado') NOT NULL,
+    status ENUM('Pendiente', 'En Proceso', 'Completado', 'Entregado', 'Cancelado') NOT NULL,
     FOREIGN KEY (client_id) REFERENCES clients(id)
 );
 
