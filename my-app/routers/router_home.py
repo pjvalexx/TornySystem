@@ -202,6 +202,43 @@ def gestionar_ordenes():
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
 
+@app.route('/actualizar-estado-orden', methods=['POST'])
+def actualizarEstadoOrden():
+    if 'conectado' in session:
+        order_id = request.form['order_id']
+        new_status = request.form['status']
+        try:
+            with connectionBD() as conexion_MySQLdb:
+                with conexion_MySQLdb.cursor(dictionary=True) as cursor:
+                    querySQL = "UPDATE work_orders SET status = %s WHERE id = %s"
+                    cursor.execute(querySQL, (new_status, order_id))
+                    conexion_MySQLdb.commit()
+                    flash('El estado de la orden fue actualizado correctamente.', 'success')
+        except Exception as e:
+            flash(f"Error al actualizar el estado de la orden: {e}", 'error')
+        return redirect(url_for('gestionar_ordenes'))
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('inicio'))
+
+@app.route('/cancelar-orden', methods=['POST'])
+def cancelarOrden():
+    if 'conectado' in session:
+        order_id = request.form['order_id']
+        try:
+            with connectionBD() as conexion_MySQLdb:
+                with conexion_MySQLdb.cursor(dictionary=True) as cursor:
+                    querySQL = "UPDATE work_orders SET status = 'Cancelado' WHERE id = %s"
+                    cursor.execute(querySQL, (order_id,))
+                    conexion_MySQLdb.commit()
+                    flash('La orden de trabajo fue cancelada correctamente.', 'success')
+        except Exception as e:
+            flash(f"Error al cancelar la orden de trabajo: {e}", 'error')
+        return redirect(url_for('gestionar_ordenes'))
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('inicio'))
+    
 @app.route('/registrar-cliente', methods=['GET'])
 def viewFormCliente():
     if 'conectado' in session:

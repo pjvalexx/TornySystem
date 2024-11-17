@@ -34,13 +34,26 @@
             <td>{{ orden.materials }}</td>
             <td>{{ orden.amount }}</td>
             <td>
-              <span class="badge {% if orden.status == 'Pendiente' %}bg-warning{% elif orden.status == 'En Proceso' %}bg-orange{% elif orden.status == 'Completado' %}bg-primary{% elif orden.status == 'Entregado' %}bg-success{% elif orden.status == 'Cancelado' %}bg-danger{% endif %}">
+              <span class="badge {% if orden.status == 'Pendiente' %}bg-warning{% elif orden.status == 'En Proceso' %}bg-warning{% elif orden.status == 'Completado' %}bg-primary{% elif orden.status == 'Entregado' %}bg-success{% elif orden.status == 'Cancelado' %}bg-danger{% endif %}">
                 {{ orden.status }}
               </span>
             </td>
             <td>
-              <a href="/editar-orden/{{ orden.id }}" class="btn btn-success btn-sm">Editar</a>
-              <button class="btn rounded-pill btn-danger" onclick="eliminarOrden('{{ orden.id }}');">Eliminar</button>
+              {% if orden.status != 'Entregado' and orden.status != 'Cancelado' %}
+              <form action="{{ url_for('actualizarEstadoOrden') }}" method="POST" onsubmit="return confirmarCambioEstado('{{ orden.id }}', '{{ orden.status }}')">
+                <input type="hidden" name="order_id" value="{{ orden.id }}">
+                <input type="hidden" name="status" id="status_{{ orden.id }}" value="">
+                <button type="submit" class="btn btn-secondary btn-sm">
+                  <i class="bi bi-arrow-right-circle"></i> <span id="estado_{{ orden.id }}"></span>
+                </button>
+              </form>
+              {% endif %}
+              {% if orden.status != 'Entregado' and orden.status != 'Cancelado' %}
+              <form action="{{ url_for('cancelarOrden') }}" method="POST" onsubmit="return confirmarCancelacion()">
+                <input type="hidden" name="order_id" value="{{ orden.id }}">
+                <button type="submit" class="btn btn-danger btn-sm mt-2">Cancelar orden</button>
+              </form>
+              {% endif %}
             </td>
           </tr>
           {% endfor %}
@@ -61,13 +74,39 @@
 {% endblock %}
 {% block customJS %}
 <script>
-  function eliminarOrden(id) {
-    if (confirm("¿Estás seguro que deseas eliminar la orden de trabajo?")) {
-      let url = `/borrar-orden/${id}`;
-      if (url) {
-        window.location.href = url;
-      }
-    }
+  function obtenerSiguienteEstado(estadoActual) {
+    const transiciones = {
+      'Pendiente': 'En Proceso',
+      'En Proceso': 'Completado',
+      'Completado': 'Entregado',
+      'Entregado': '',
+      'Cancelado': ''
+    };
+    return transiciones[estadoActual];
   }
+
+  function confirmarCambioEstado(orderId, estadoActual) {
+    const estadoSiguiente = obtenerSiguienteEstado(estadoActual);
+    if (!estadoSiguiente) {
+      alert('No se puede cambiar el estado.');
+      return false;
+    }
+    document.getElementById(`status_${orderId}`).value = estadoSiguiente;
+    return confirm(`¿Estás seguro que deseas cambiar el estado de "${estadoActual}" a "${estadoSiguiente}"?`);
+  }
+
+  function confirmarCancelacion() {
+    return confirm('¿Estás seguro que deseas cancelar la orden de trabajo?');
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const ordenes = {{ ordenes | tojson | safe }};
+    ordenes.forEach(orden => {
+      const estadoSiguiente = obtenerSiguienteEstado(orden.status);
+      if (estadoSiguiente) {
+        document.getElementById(`estado_${orden.id}`).innerText = estadoSiguiente;
+      }
+    });
+  });
 </script>
 {% endblock %}
