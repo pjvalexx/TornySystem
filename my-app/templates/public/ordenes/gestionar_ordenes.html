@@ -8,6 +8,22 @@
       Gestionar Órdenes de Trabajo
       <hr />
     </h2>
+    <div class="row mb-3 justify-content-end">
+      <div class="col-md-4 d-flex justify-content-end">
+        <div class="form-check me-3">
+          <input class="form-check-input" type="checkbox" id="ocultarEntregadas" onchange="filtrarOrdenes()" checked>
+          <label class="form-check-label" for="ocultarEntregadas">
+            Ocultar Entregadas
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="ocultarCanceladas" onchange="filtrarOrdenes()" checked>
+          <label class="form-check-label" for="ocultarCanceladas">
+            Ocultar Canceladas
+          </label>
+        </div>
+      </div>
+    </div>
     <div class="table-responsive text-nowrap">
       <table class="table table-hover">
         <thead>
@@ -23,9 +39,9 @@
             <th>Acción</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="tablaOrdenes">
           {% for orden in ordenes %}
-          <tr>
+          <tr class="orden-row" data-estado="{{ orden.status }}">
             <td>{{ orden.id }}</td>
             <td>{{ orden.client_name }}</td>
             <td>{{ orden.service_type }}</td>
@@ -99,6 +115,23 @@
     return confirm('¿Estás seguro que deseas cancelar la orden de trabajo?');
   }
 
+  function filtrarOrdenes() {
+    const ocultarEntregadas = document.getElementById('ocultarEntregadas').checked;
+    const ocultarCanceladas = document.getElementById('ocultarCanceladas').checked;
+    const filas = document.querySelectorAll('.orden-row');
+    filas.forEach(fila => {
+      const estado = fila.getAttribute('data-estado');
+      if (
+        (!ocultarEntregadas || estado !== 'Entregado') &&
+        (!ocultarCanceladas || estado !== 'Cancelado')
+      ) {
+        fila.style.display = '';
+      } else {
+        fila.style.display = 'none';
+      }
+    });
+  }
+
   document.addEventListener('DOMContentLoaded', function() {
     const ordenes = {{ ordenes | tojson | safe }};
     ordenes.forEach(orden => {
@@ -107,6 +140,7 @@
         document.getElementById(`estado_${orden.id}`).innerText = estadoSiguiente;
       }
     });
+    filtrarOrdenes(); // Aplicar filtros por defecto al cargar la página
   });
 </script>
 {% endblock %}
