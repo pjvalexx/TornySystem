@@ -136,6 +136,10 @@ def asignarRol():
         flash('No tienes permiso para realizar esta acción.', 'error')
         return redirect(url_for('inicio'))
 
+from app import app
+from flask import render_template, request, flash, redirect, url_for, session
+from controllers.funciones_home import *
+
 @app.route('/registrar-orden', methods=['GET'])
 def viewFormOrden():
     if 'conectado' in session:

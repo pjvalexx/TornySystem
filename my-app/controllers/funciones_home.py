@@ -1,5 +1,6 @@
 # Para subir archivo tipo foto al servidor
 from werkzeug.utils import secure_filename
+from flask import session
 import uuid  # Modulo de python para crear un string
 
 from conexion.conexionBD import connectionBD  # Conexión a BD
@@ -450,12 +451,31 @@ def procesar_form_orden(dataForm):
 
                 # Insertar materiales utilizados en la orden de trabajo
                 for material_id in dataForm['materials[]']:
+                    cantidad = dataForm['quantities[{}]'.format(material_id)][0]
                     sql_material = """
-                        INSERT INTO work_order_materials (work_order_id, material_id)
-                        VALUES (%s, %s)
+                        INSERT INTO work_order_materials (work_order_id, material_id, quantity)
+                        VALUES (%s, %s, %s)
                     """
-                    print("Insertando material:", (order_id, material_id))  # Depuración
-                    cursor.execute(sql_material, (order_id, material_id))
+                    print("Insertando material:", (order_id, material_id, cantidad))  # Depuración
+                    cursor.execute(sql_material, (order_id, material_id, cantidad))
+                    conexion_MySQLdb.commit()
+
+                    # Actualizar el stock del material
+                    sql_update_stock = """
+                        UPDATE materials
+                        SET quantity = quantity - %s
+                        WHERE id = %s
+                    """
+                    cursor.execute(sql_update_stock, (cantidad, material_id))
+                    conexion_MySQLdb.commit()
+
+                    # Registrar movimiento de inventario
+                    user_id = session.get('id')  # Obtener el ID del usuario desde la sesión
+                    queryMovimiento = """
+                        INSERT INTO inventory_movements (material_id, quantity, movement_type, user_id)
+                        VALUES (%s, %s, 'Salida', %s)
+                    """
+                    cursor.execute(queryMovimiento, (material_id, cantidad, user_id))
                     conexion_MySQLdb.commit()
 
                 return cursor.rowcount
