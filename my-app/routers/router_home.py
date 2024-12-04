@@ -1,22 +1,21 @@
 from app import app
-from flask import render_template, request, flash, redirect, url_for, session,  jsonify
+from flask import render_template, request, flash, redirect, url_for, session, jsonify
 from mysql.connector.errors import Error
 
-
-# Importando cenexión a BD
+# Importando conexión a BD
 from controllers.funciones_home import *
+from controllers.funciones_inventario import *
 
-PATH_URL = "public/empleados"
-
+PATH_URL_EMPLEADOS = "public/empleados"
+PATH_URL_INVENTARIO = "public/inventario"
 
 @app.route('/registrar-empleado', methods=['GET'])
 def viewFormEmpleado():
     if 'conectado' in session:
-        return render_template(f'{PATH_URL}/form_empleado.html')
+        return render_template(f'{PATH_URL_EMPLEADOS}/form_empleado.html')
     else:
         flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
-
 
 @app.route('/form-registrar-empleado', methods=['POST'])
 def formEmpleado():
@@ -28,20 +27,18 @@ def formEmpleado():
                 return redirect(url_for('lista_empleados'))
             else:
                 flash('El empleado NO fue registrado.', 'error')
-                return render_template(f'{PATH_URL}/form_empleado.html')
+                return render_template(f'{PATH_URL_EMPLEADOS}/form_empleado.html')
     else:
         flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
-
 
 @app.route('/lista-de-empleados', methods=['GET'])
 def lista_empleados():
     if 'conectado' in session:
-        return render_template(f'{PATH_URL}/lista_empleados.html', empleados=sql_lista_empleadosBD())
+        return render_template(f'{PATH_URL_EMPLEADOS}/lista_empleados.html', empleados=sql_lista_empleadosBD())
     else:
         flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
-
 
 @app.route("/detalles-empleado/", methods=['GET'])
 @app.route("/detalles-empleado/<int:idEmpleado>", methods=['GET'])
@@ -52,43 +49,39 @@ def detalleEmpleado(idEmpleado=None):
             return redirect(url_for('inicio'))
         else:
             detalle_empleado = sql_detalles_empleadosBD(idEmpleado) or []
-            return render_template(f'{PATH_URL}/detalles_empleado.html', detalle_empleado=detalle_empleado)
+            return render_template(f'{PATH_URL_EMPLEADOS}/detalles_empleado.html', detalle_empleado=detalle_empleado)
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
 
-
-# Buscadon de empleados
+# Buscando de empleados
 @app.route("/buscando-empleado", methods=['POST'])
 def viewBuscarEmpleadoBD():
     resultadoBusqueda = buscarEmpleadoBD(request.json['busqueda'])
     if resultadoBusqueda:
-        return render_template(f'{PATH_URL}/resultado_busqueda_empleado.html', dataBusqueda=resultadoBusqueda)
+        return render_template(f'{PATH_URL_EMPLEADOS}/resultado_busqueda_empleado.html', dataBusqueda=resultadoBusqueda)
     else:
         return jsonify({'fin': 0})
-
 
 @app.route("/editar-empleado/<int:id>", methods=['GET'])
 def viewEditarEmpleado(id):
     if 'conectado' in session:
         respuestaEmpleado = buscarEmpleadoUnico(id)
         if respuestaEmpleado:
-            return render_template(f'{PATH_URL}/form_empleado_update.html', respuestaEmpleado=respuestaEmpleado)
+            return render_template(f'{PATH_URL_EMPLEADOS}/form_empleado_update.html', respuestaEmpleado=respuestaEmpleado)
         else:
             flash('El empleado no existe.', 'error')
             return redirect(url_for('inicio'))
     else:
-        flash('Primero debes iniciar sesión.', 'error')
+        flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
 
-
-# Recibir formulario para actulizar informacion de empleado
+# Recibir formulario para actualizar información de empleado
 @app.route('/actualizar-empleado', methods=['POST'])
 def actualizarEmpleado():
     resultData = procesar_actualizacion_form(request)
     if resultData:
         return redirect(url_for('lista_empleados'))
-
 
 @app.route("/lista-de-usuarios", methods=['GET'])
 def usuarios():
@@ -109,14 +102,12 @@ def borrarUsuario(id):
         flash('El Usuario fue eliminado correctamente', 'success')
         return redirect(url_for('usuarios'))
 
-
 @app.route('/borrar-empleado/<string:id_empleado>/<string:foto_empleado>', methods=['GET'])
 def borrarEmpleado(id_empleado, foto_empleado):
     resp = eliminarEmpleado(id_empleado, foto_empleado)
     if resp:
         flash('El Empleado fue eliminado correctamente', 'success')
         return redirect(url_for('lista_empleados'))
-
 
 @app.route("/descargar-informe-empleados/", methods=['GET'])
 def reporteBD():
@@ -125,7 +116,6 @@ def reporteBD():
     else:
         flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
-
 
 @app.route('/asignar-rol', methods=['POST'])
 def asignarRol():
@@ -145,7 +135,6 @@ def asignarRol():
     else:
         flash('No tienes permiso para realizar esta acción.', 'error')
         return redirect(url_for('inicio'))
-
 
 @app.route('/registrar-orden', methods=['GET'])
 def viewFormOrden():
@@ -238,7 +227,7 @@ def cancelarOrden():
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
-    
+
 @app.route('/registrar-cliente', methods=['GET'])
 def viewFormCliente():
     if 'conectado' in session:
@@ -266,6 +255,105 @@ def lista_clientes():
     if 'conectado' in session:
         clientes = obtenerClientes()
         return render_template('public/clientes/lista_clientes.html', clientes=clientes)
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('inicio'))
+
+# Rutas del módulo de inventario
+
+@app.route('/inventario', methods=['GET'])
+def consultar_stock():
+    if 'conectado' in session:
+        materiales = obtenerMateriales()
+        return render_template(f'{PATH_URL_INVENTARIO}/consultar_stock.html', materiales=materiales)
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('inicio'))
+
+@app.route('/añadir-material', methods=['GET', 'POST'])
+def añadir_material():
+    if 'conectado' in session:
+        if request.method == 'POST':
+            dataForm = request.form.to_dict()
+            resultado = procesar_form_material(dataForm)
+            if resultado:
+                flash('El material fue añadido correctamente.', 'success')
+                return redirect(url_for('consultar_stock'))
+            else:
+                flash('El material NO fue añadido.', 'error')
+        proveedores = obtenerProveedores()
+        return render_template(f'{PATH_URL_INVENTARIO}/form_material.html', proveedores=proveedores)
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('inicio'))
+
+@app.route('/modificar-stock/<int:id>', methods=['GET', 'POST'])
+def modificar_stock(id):
+    if 'conectado' in session:
+        if request.method == 'POST':
+            cantidad = request.form['cantidad']
+            tipo_movimiento = request.form['tipo_movimiento']
+            resultado = actualizar_stock(id, cantidad, tipo_movimiento)
+            if resultado:
+                flash('El stock fue actualizado correctamente.', 'success')
+                return redirect(url_for('consultar_stock'))
+            else:
+                flash('El stock NO fue actualizado.', 'error')
+        material = obtenerMaterial(id)
+        return render_template(f'{PATH_URL_INVENTARIO}/modificar_stock.html', material=material)
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('inicio'))
+
+@app.route('/gestionar-proveedores', methods=['GET', 'POST'])
+def gestionar_proveedores():
+    if 'conectado' in session:
+        if request.method == 'POST':
+            dataForm = request.form.to_dict()
+            resultado = procesar_form_proveedor(dataForm)
+            if resultado:
+                flash('El proveedor fue gestionado correctamente.', 'success')
+                return redirect(url_for('gestionar_proveedores'))
+            else:
+                flash('El proveedor NO fue gestionado.', 'error')
+        proveedores = obtenerProveedores()
+        return render_template(f'{PATH_URL_INVENTARIO}/gestionar_proveedores.html', proveedores=proveedores)
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('inicio'))
+
+@app.route('/establecer-alertas', methods=['GET', 'POST'])
+def establecer_alertas():
+    if 'conectado' in session:
+        if request.method == 'POST':
+            dataForm = request.form.to_dict()
+            resultado = procesar_form_alerta(dataForm)
+            if resultado:
+                flash('La alerta fue establecida correctamente.', 'success')
+                return redirect(url_for('consultar_stock'))
+            else:
+                flash('La alerta NO fue establecida.', 'error')
+        materiales = obtenerMateriales()
+        return render_template(f'{PATH_URL_INVENTARIO}/establecer_alertas.html', materiales=materiales)
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('inicio'))
+
+@app.route('/copia-seguridad', methods=['GET'])
+def copia_seguridad():
+    if 'conectado' in session:
+        # Lógica para generar la copia de seguridad
+        flash('Copia de seguridad generada correctamente.', 'success')
+        return redirect(url_for('inicio'))
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('inicio'))
+
+@app.route('/movimientos', methods=['GET'])
+def consultar_movimientos():
+    if 'conectado' in session:
+        movimientos = obtenerMovimientos()
+        return render_template(f'{PATH_URL_INVENTARIO}/consultar_movimientos.html', movimientos=movimientos)
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))

@@ -1,0 +1,48 @@
+{% extends 'public/base_cpanel.html' %}
+{% block title %}Movimientos de Inventario{% endblock %}
+{% block body %}
+{% if (movimientos) %}
+<div class="card content_consignaciones" style="border-radius: 0px !important">
+  <section id="respuestaFiltroMes">
+    <h2 class="text-center mt-5 mb-5">
+      Movimientos de Inventario
+      <hr />
+    </h2>
+    <div class="table-responsive text-nowrap">
+      <table class="table table-hover">
+        <thead>
+          <tr style="background-color: #ddd">
+            <th>ID</th>
+            <th>Material</th>
+            <th>Cantidad</th>
+            <th>Tipo de Movimiento</th>
+            <th>Fecha</th>
+            <th>Usuario</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for movimiento in movimientos %}
+          <tr>
+            <td>{{ movimiento.id }}</td>
+            <td>{{ movimiento.material_name }}</td>
+            <td>{{ movimiento.quantity }}</td>
+            <td>{{ movimiento.movement_type }}</td>
+            <td>{{ movimiento.date }}</td>
+            <td>{{ movimiento.user_name }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+{% else %}
+<div class="container mt-3 mb-3" style="width: 100% !important">
+  <div class="row justify-content-md-center mb-2">
+    <div class="col-12">
+      <h2 class="text-center">No hay movimientos de inventario</h2>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

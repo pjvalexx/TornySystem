@@ -11,6 +11,26 @@ import re
 from werkzeug.security import generate_password_hash
 
 
+def validar_login(email_user, pass_user):
+    try:
+        with connectionBD() as conexion_MySQLdb:
+            with conexion_MySQLdb.cursor(dictionary=True) as cursor:
+                querySQL = "SELECT * FROM users WHERE email_user = %s"
+                cursor.execute(querySQL, (email_user,))
+                user = cursor.fetchone()
+                if user and check_password_hash(user['pass_user'], pass_user):
+                    session['id'] = user['id']
+                    session['name_surname'] = user['name_surname']
+                    session['email_user'] = user['email_user']
+                    session['role_id'] = user['role_id']
+                    return True
+                else:
+                    return False
+    except Exception as e:
+        print(f"Error en validar_login: {e}")
+        return False
+
+
 def recibeInsertRegisterUser(name_surname, email_user, pass_user):
     respuestaValidar = validarDataRegisterLogin(
         name_surname, email_user, pass_user)

@@ -52,6 +52,42 @@
         <div data-i18n="Boxicons">Lista de Clientes</div>
       </a>
     </li>
+    <li class="menu-header small text-uppercase">
+      <span class="menu-header-text">Inventario</span>
+    </li>
+    <li class="menu-item {% if request.path == '/inventario' %} active {% endif %}">
+      <a href="{{ url_for('consultar_stock') }}" class="menu-link">
+        <i class="menu-icon bi bi-box-seam"></i>
+        <div data-i18n="Basic">Consultar Stock</div>
+      </a>
+    </li>
+    <li class="menu-item {% if request.path == '/añadir-material' %} active {% endif %}">
+      <a href="{{ url_for('añadir_material') }}" class="menu-link">
+        <i class="menu-icon bi bi-plus-square"></i>
+        <div data-i18n="Basic">Añadir Material</div>
+      </a>
+    </li>
+    <li class="menu-item {% if request.path == '/gestionar-proveedores' %} active {% endif %}">
+      <a href="{{ url_for('gestionar_proveedores') }}" class="menu-link">
+        <i class="menu-icon bi bi-people"></i>
+        <div data-i18n="Basic">Gestionar Proveedores</div>
+      </a>
+    </li>
+    <li class="menu-item {% if request.path == '/establecer-alertas' %} active {% endif %}">
+      <a href="{{ url_for('establecer_alertas') }}" class="menu-link">
+        <i class="menu-icon bi bi-bell"></i>
+        <div data-i18n="Basic">Establecer Alertas</div>
+      </a>
+    </li>
+    <li class="menu-item {% if request.path == '/movimientos' %} active {% endif %}">
+      <a href="{{ url_for('consultar_movimientos') }}" class="menu-link">
+        <i class="menu-icon bi bi-arrow-left-right"></i>
+        <div data-i18n="Basic">Movimientos de Inventario</div>
+      </a>
+    </li>
+    <li class="menu-header small text-uppercase">
+      <span class="menu-header-text">Configuración</span>
+    </li>
     <li class="menu-item {% if request.path == '/lista-de-usuarios' %} active {% endif %}">
       <a href="{{ url_for('usuarios') }}" class="menu-link">
         <i class="menu-icon bi bi-person-lines-fill"></i>
@@ -62,6 +98,12 @@
       <a href="{{ url_for('perfil') }}" class="menu-link">
         <i class="menu-icon bi bi-person-fill-gear"></i>
         <div data-i18n="Tables">Mi Perfil</div>
+      </a>
+    </li>
+    <li class="menu-item {% if request.path == '/copia-seguridad' %} active {% endif %}">
+      <a href="{{ url_for('copia_seguridad') }}" class="menu-link">
+        <i class="menu-icon bi bi-cloud-arrow-down"></i>
+        <div data-i18n="Tables">Copia de Seguridad</div>
       </a>
     </li>
     <li class="menu-item">
