@@ -140,7 +140,8 @@ def asignarRol():
 def viewFormOrden():
     if 'conectado' in session:
         clientes = obtenerClientes()
-        return render_template('public/ordenes/form_orden.html', clientes=clientes)
+        materiales = obtenerMateriales()
+        return render_template('public/ordenes/form_orden.html', clientes=clientes, materiales=materiales)
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
@@ -148,7 +149,7 @@ def viewFormOrden():
 @app.route('/form-registrar-orden', methods=['POST'])
 def formOrden():
     if 'conectado' in session:
-        dataForm = request.form.to_dict()
+        dataForm = request.form.to_dict(flat=False)
         dataForm['status'] = 'Pendiente'  # Establecer el estado por defecto como "Pendiente"
         resultado = procesar_form_orden(dataForm)
         if resultado:
@@ -156,7 +157,9 @@ def formOrden():
             return redirect(url_for('lista_ordenes'))
         else:
             flash('La orden de trabajo NO fue registrada.', 'error')
-            return render_template('public/ordenes/form_orden.html')
+            clientes = obtenerClientes()
+            materiales = obtenerMateriales()
+            return render_template('public/ordenes/form_orden.html', clientes=clientes, materiales=materiales)
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))

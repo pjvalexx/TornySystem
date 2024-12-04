@@ -76,7 +76,6 @@ CREATE TABLE work_orders (
     service_type ENUM('Fabricacion', 'Rectificacion', 'Reparacion') NOT NULL,
     description TEXT NOT NULL,
     delivery_date DATE NOT NULL,
-    materials TEXT NOT NULL,
     amount DECIMAL(10, 2) NOT NULL,
     status ENUM('Pendiente', 'En Proceso', 'Completado', 'Entregado', 'Cancelado') NOT NULL,
     FOREIGN KEY (client_id) REFERENCES clients(id)
@@ -123,6 +122,14 @@ CREATE TABLE stock_alerts (
     alert_active BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (material_id) REFERENCES materials(id)
+);
+
+CREATE TABLE work_order_materials (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    work_order_id INT,
+    material_id INT,
+    FOREIGN KEY (work_order_id) REFERENCES work_orders(id),
     FOREIGN KEY (material_id) REFERENCES materials(id)
 );
 

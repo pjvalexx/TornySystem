@@ -425,23 +425,39 @@ def obtenerClientes():
 
 def procesar_form_orden(dataForm):
     try:
+        print("Datos del formulario:", dataForm)  # Depuración
         with connectionBD() as conexion_MySQLdb:
             with conexion_MySQLdb.cursor(dictionary=True) as cursor:
                 sql = """
-                    INSERT INTO work_orders (client_id, service_type, description, delivery_date, materials, amount, status)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    INSERT INTO work_orders (client_id, service_type, description, delivery_date, amount, status)
+                    VALUES (%s, %s, %s, %s, %s, %s)
                 """
                 valores = (
-                    dataForm['client_id'],
-                    dataForm['service_type'],
-                    dataForm['description'],
-                    dataForm['delivery_date'],
-                    dataForm['materials'],
-                    dataForm['amount'],
+                    dataForm['client_id'][0],
+                    dataForm['service_type'][0],
+                    dataForm['description'][0],
+                    dataForm['delivery_date'][0],
+                    dataForm['amount'][0],
                     dataForm['status']
                 )
+                print("Valores para insertar en work_orders:", valores)  # Depuración
                 cursor.execute(sql, valores)
                 conexion_MySQLdb.commit()
+
+                # Obtener el ID de la orden de trabajo recién insertada
+                order_id = cursor.lastrowid
+                print("ID de la orden de trabajo recién insertada:", order_id)  # Depuración
+
+                # Insertar materiales utilizados en la orden de trabajo
+                for material_id in dataForm['materials[]']:
+                    sql_material = """
+                        INSERT INTO work_order_materials (work_order_id, material_id)
+                        VALUES (%s, %s)
+                    """
+                    print("Insertando material:", (order_id, material_id))  # Depuración
+                    cursor.execute(sql_material, (order_id, material_id))
+                    conexion_MySQLdb.commit()
+
                 return cursor.rowcount
     except Exception as e:
         print(f"Error en procesar_form_orden: {e}")
@@ -452,7 +468,7 @@ def obtenerOrdenes():
         with connectionBD() as conexion_MySQLdb:
             with conexion_MySQLdb.cursor(dictionary=True) as cursor:
                 querySQL = """
-                    SELECT wo.id, c.name AS client_name, wo.service_type, wo.description, wo.delivery_date, wo.materials, wo.amount, wo.status
+                    SELECT wo.id, c.name AS client_name, wo.service_type, wo.description, wo.delivery_date, wo.amount, wo.status
                     FROM work_orders wo
                     JOIN clients c ON wo.client_id = c.id
                 """

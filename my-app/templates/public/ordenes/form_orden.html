@@ -43,7 +43,11 @@
             </div>
             <div class="col-md-6">
               <label for="materials" class="form-label">Materiales</label>
-              <input type="text" name="materials" class="form-control" required />
+              <select name="materials[]" class="form-select" multiple required>
+                {% for material in materiales %}
+                <option value="{{ material.id }}">{{ material.name }} - {{ material.quantity }} {{ material.unit }}</option>
+                {% endfor %}
+              </select>
             </div>
           </div>
           <div class="row mt-2">

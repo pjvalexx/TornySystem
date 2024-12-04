@@ -33,7 +33,6 @@
             <th>Tipo de Servicio</th>
             <th>Descripción</th>
             <th>Fecha de Entrega</th>
-            <th>Materiales</th>
             <th>Monto</th>
             <th>Estado</th>
             <th>Acción</th>
@@ -47,7 +46,6 @@
             <td>{{ orden.service_type }}</td>
             <td>{{ orden.description }}</td>
             <td>{{ orden.delivery_date }}</td>
-            <td>{{ orden.materials }}</td>
             <td>{{ orden.amount }}</td>
             <td>
               <span class="badge {% if orden.status == 'Pendiente' %}bg-warning{% elif orden.status == 'En Proceso' %}bg-orange{% elif orden.status == 'Completado' %}bg-primary{% elif orden.status == 'Entregado' %}bg-success{% elif orden.status == 'Cancelado' %}bg-danger{% endif %}">
