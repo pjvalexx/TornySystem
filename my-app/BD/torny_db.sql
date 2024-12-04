@@ -15,26 +15,9 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 -- Volcando estructura de base de datos para crud_python
-CREATE DATABASE IF NOT EXISTS `crud_python` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `crud_python`;
+CREATE DATABASE IF NOT EXISTS `torny_db` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `torny_db`;
 
--- Volcando estructura para tabla crud_python.tbl_empleados
-CREATE TABLE IF NOT EXISTS `tbl_empleados` (
-  `id_empleado` int NOT NULL AUTO_INCREMENT,
-  `nombre_empleado` varchar(50) DEFAULT NULL,
-  `apellido_empleado` varchar(50) DEFAULT NULL,
-  `sexo_empleado` int DEFAULT NULL,
-  `telefono_empleado` varchar(50) DEFAULT NULL,
-  `email_empleado` varchar(50) DEFAULT NULL,
-  `profesion_empleado` varchar(50) DEFAULT NULL,
-  `foto_empleado` mediumtext,
-  `salario_empleado` bigint DEFAULT NULL,
-  `fecha_registro` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id_empleado`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Volcando datos para la tabla crud_python.tbl_empleados: ~3 rows (aproximadamente)
-INSERT INTO `tbl_empleados` VALUES (4,'Urian','Viera',1,'54544454','programadorphp2017@gmail.com','Ingeniero de Sistemas','fda30f83ebbc4fb1a2ce2609b2b1e34c6614c1dff6e44460b9ba27ed5bb8e927.png',3500000,'2023-08-23 17:04:49'),(5,'Brenda','Viera',2,'323543543','brenda@gmail.com','Dev','22c055aeec314572a0046ec50b84f21719270dac6ea34c91b8380ac289fff9e5.png',1200000,'2023-08-23 17:05:34'),(6,'Alejandro','Torres',1,'324242342','alejandro@gmail.com','Tecnico','7b84aceb56534d27aa2e8b727a245dca9f60156a070a47c491ff2d21da1742e5.png',2100,'2023-08-23 17:06:13'),(7,'Karla','Ramos',2,'345678','karla@gmail.com','Ingeniera','248cc9c38cfb494bb2300d7cbf4a3b317522f295338b4639a8e025e6b203291c.png',2300,'2023-08-23 17:07:28');
 
 -- Crear tabla de roles
 CREATE TABLE roles (
