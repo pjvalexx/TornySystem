@@ -250,3 +250,8 @@ tbody tr:hover {
 .bg-danger {
   background-color: #dc3545 !important;
 }
+
+body, h1, h2, h3, h4, h5, h6, p, a, span, div, label, input, button, select, textarea {
+  color: #000000 !important; /* Negro oscuro */
+  font-weight: bold !important; /* Negrita */
+}
