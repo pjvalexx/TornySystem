@@ -1,55 +1,108 @@
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
-  <div class="app-brand demo">
-    <a href="{{ url_for('inicio') }}" class="app-brand-link">
-      <span class="app-brand-logo demo">
-        <img
-          src="{{ url_for('static', filename ='assets/img/logo.png') }}"
-          alt="Logo" />
-      </span>
-    </a>
-
-    <a
-      href="javascript:void(0);"
-      class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
-      <i class="bx bx-chevron-left bx-sm align-middle"></i>
-    </a>
-  </div>
-
-  <div class="menu-inner-shadow"></div>
   <ul class="menu-inner py-5">
-    <li
-      class="menu-item {% if request.path == '/registrar-empleado' %} active {% endif %}">
-      <a href="{{ url_for('viewFormEmpleado') }}" class="menu-link">
+    <div class="app-brand demo">
+      <a href="{{ url_for('inicio') }}" class="app-brand-link">
+        <span class="app-brand-logo demo">
+          <img
+            src="{{ url_for('static', filename ='assets/img/logo.png') }}"
+            alt="Logo" />
+        </span>
+      </a>
+      <a
+        href="javascript:void(0);"
+        class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+        <i class="bx bx-chevron-left bx-sm align-middle"></i>
+      </a>
+    </div>
+    <li class="menu-header small text-uppercase">
+      <span class="menu-header-text">Órdenes de Trabajo</span>
+    </li>
+    <li class="menu-item {% if request.path == '/registrar-orden' %} active {% endif %}">
+      <a href="{{ url_for('viewFormOrden') }}" class="menu-link">
         <i class="menu-icon bi bi-person-bounding-box"></i>
-        <div data-i18n="Basic">Registrar Empleado</div>
+        <div data-i18n="Basic">Crear Orden de Trabajo</div>
       </a>
     </li>
-    <li
-      class="menu-item {% if request.path == '/lista-de-empleados' %} active{% endif %}">
-      <a href="/lista-de-empleados" class="menu-link">
-        <i class="menu-icon bi bi-person-lines-fill"></i>
-        <div data-i18n="Boxicons">Lista de Empleados</div>
+    <li class="menu-item {% if request.path == '/lista-de-ordenes' %} active{% endif %}">
+      <a href="{{ url_for('lista_ordenes') }}" class="menu-link">
+        <i class="menu-icon bi bi-list-task"></i>
+        <div data-i18n="Boxicons">Listar Órdenes de Trabajo</div>
       </a>
     </li>
-    <li
-      class="menu-item {% if request.path == '/descargar-informe-empleados' %} active {% endif %}">
-      <a href="/descargar-informe-empleados" class="menu-link">
-        <i class="menu-icon bi bi-file-earmark-spreadsheet-fill"></i>
-        <div data-i18n="Tables">Reportes</div>
+    <li class="menu-item {% if request.path == '/gestionar-ordenes' %} active{% endif %}">
+      <a href="{{ url_for('gestionar_ordenes') }}" class="menu-link">
+        <i class="menu-icon bi bi-gear"></i>
+        <div data-i18n="Boxicons">Gestionar Órdenes de Trabajo</div>
       </a>
     </li>
-    <li
-      class="menu-item {% if request.path == '/lista-de-usuarios' %} active {% endif %}">
-      <a href="/lista-de-usuarios" class="menu-link">
+    <!-- Otras opciones del menú-->
+    <li class="menu-header small text-uppercase">
+      <span class="menu-header-text">Clientes</span>
+    </li>
+    <li class="menu-item {% if request.path == '/registrar-cliente' %} active {% endif %}">
+      <a href="{{ url_for('viewFormCliente') }}" class="menu-link">
+        <i class="menu-icon bi bi-person-plus"></i>
+        <div data-i18n="Basic">Registrar Cliente</div>
+      </a>
+    </li>
+    <li class="menu-item {% if request.path == '/lista-de-clientes' %} active{% endif %}">
+      <a href="{{ url_for('lista_clientes') }}" class="menu-link">
+        <i class="menu-icon bi bi-list-ul"></i>
+        <div data-i18n="Boxicons">Lista de Clientes</div>
+      </a>
+    </li>
+    <li class="menu-header small text-uppercase">
+      <span class="menu-header-text">Inventario</span>
+    </li>
+    <li class="menu-item {% if request.path == '/inventario' %} active {% endif %}">
+      <a href="{{ url_for('consultar_stock') }}" class="menu-link">
+        <i class="menu-icon bi bi-box-seam"></i>
+        <div data-i18n="Basic">Consultar Inventario</div>
+      </a>
+    </li>
+    <li class="menu-item {% if request.path == '/añadir-material' %} active {% endif %}">
+      <a href="{{ url_for('añadir_material') }}" class="menu-link">
+        <i class="menu-icon bi bi-plus-square"></i>
+        <div data-i18n="Basic">Añadir Material</div>
+      </a>
+    </li>
+    <li class="menu-item {% if request.path == '/gestionar-proveedores' %} active {% endif %}">
+      <a href="{{ url_for('gestionar_proveedores') }}" class="menu-link">
+        <i class="menu-icon bi bi-people"></i>
+        <div data-i18n="Basic">Gestionar Proveedores</div>
+      </a>
+    </li>
+    <li class="menu-item {% if request.path == '/establecer-alertas' %} active {% endif %}">
+      <a href="{{ url_for('establecer_alertas') }}" class="menu-link">
+        <i class="menu-icon bi bi-bell"></i>
+        <div data-i18n="Basic">Establecer Alertas</div>
+      </a>
+    </li>
+    <li class="menu-item {% if request.path == '/movimientos' %} active {% endif %}">
+      <a href="{{ url_for('consultar_movimientos') }}" class="menu-link">
+        <i class="menu-icon bi bi-arrow-left-right"></i>
+        <div data-i18n="Basic">Movimientos de Inventario</div>
+      </a>
+    </li>
+    <li class="menu-header small text-uppercase">
+      <span class="menu-header-text">Configuración</span>
+    </li>
+    <li class="menu-item {% if request.path == '/lista-de-usuarios' %} active {% endif %}">
+      <a href="{{ url_for('usuarios') }}" class="menu-link">
         <i class="menu-icon bi bi-person-lines-fill"></i>
         <div data-i18n="Tables">Lista de Usuarios</div>
       </a>
     </li>
-    <li
-      class="menu-item {% if request.path == '/mi-perfil' %} active {% endif %}">
-      <a href="/mi-perfil" class="menu-link">
+    <li class="menu-item {% if request.path == '/mi-perfil' %} active {% endif %}">
+      <a href="{{ url_for('perfil') }}" class="menu-link">
         <i class="menu-icon bi bi-person-fill-gear"></i>
         <div data-i18n="Tables">Mi Perfil</div>
+      </a>
+    </li>
+    <li class="menu-item {% if request.path == '/copia-seguridad' %} active {% endif %}">
+      <a href="{{ url_for('copia_seguridad') }}" class="menu-link">
+        <i class="menu-icon bi bi-cloud-arrow-down"></i>
+        <div data-i18n="Tables">Copia de Seguridad</div>
       </a>
     </li>
     <li class="menu-item">
@@ -60,3 +113,4 @@
     </li>
   </ul>
 </aside>
+

@@ -81,7 +81,9 @@ body {
 }
 
 .menu-vertical .app-brand {
-  padding-left: 15px !important;
+  padding-left: 0px !important;
+  padding-top: 0px !important;
+  margin-top: 0px !important;
 }
 
 .btnMovil {
@@ -168,6 +170,8 @@ tbody tr:hover {
 
 .menu-vertical .menu-inner > .menu-item .menu-link {
   margin: 0 !important;
+  margin-bottom: 5px; /* Ajusta este valor según tus necesidades */
+  padding: 5px 10px;
 }
 .menu-vertical,
 .menu-vertical .menu-block,
@@ -233,4 +237,48 @@ tbody tr:hover {
 #search {
   min-width: 44% !important;
   background-color: #f3efef !important;
+}
+
+.bg-warning {
+  background-color: #ffc107 !important;
+}
+.bg-orange {
+  background-color: #fd7e14 !important;
+}
+.bg-primary {
+  background-color: #007bff !important;
+}
+.bg-success {
+  background-color: #28a745 !important;
+}
+.bg-danger {
+  background-color: #dc3545 !important;
+}
+
+body, h1, h2, h3, h4, h5, h6, p, a, span, div, label, input, button, select, textarea {
+  color: #000000 !important; /* Negro oscuro */
+  font-weight: bold !important; /* Negrita */
+}
+
+.hidden {
+  display: none;
+}
+
+/* Estilo para los nombres de las secciones */
+.menu-vertical .menu-header-text {
+  font-size: 16px; /* Ajusta este valor según tus necesidades */
+  font-weight: bold; /* Opcional: para hacer el texto más grueso */
+}
+
+/* Estilo para las opciones hijas */
+.menu-vertical .menu-item .menu-link div {
+  font-size: 14px; /* Ajusta este valor según tus necesidades */
+}
+
+.table-row-entrada {
+  background-color: #d4edda; /* Verde claro */
+}
+
+.table-row-salida {
+  background-color: #f8d7da; /* Rojo claro */
 }
