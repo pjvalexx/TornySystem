@@ -22,7 +22,7 @@
         </thead>
         <tbody>
           {% for movimiento in movimientos %}
-          <tr>
+          <tr class="{% if movimiento.movement_type == 'Entrada' %}table-row-entrada{% elif movimiento.movement_type == 'Salida' %}table-row-salida{% endif %}">
             <td>{{ movimiento.id }}</td>
             <td>{{ movimiento.material_name }}</td>
             <td>{{ movimiento.quantity }}</td>
