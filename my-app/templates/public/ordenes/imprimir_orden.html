@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Imprimir Orden de Trabajo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+        }
+        .header, .footer {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .content {
+            margin: 20px 0;
+        }
+        .content h2 {
+            text-align: center;
+        }
+        .content table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .content table, .content th, .content td {
+            border: 1px solid black;
+        }
+        .content th, .content td {
+            padding: 10px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Orden de Trabajo</h1>
+        </div>
+        <div class="content">
+            <h2>Detalles de la Orden</h2>
+            <table>
+                <tr>
+                    <th>Tipo de Servicio</th>
+                    <td>{{ orden.service_type }}</td>
+                </tr>
+                <tr>
+                    <th>Descripción</th>
+                    <td>{{ orden.description }}</td>
+                </tr>
+                <tr>
+                    <th>Fecha de Entrega</th>
+                    <td>{{ orden.delivery_date }}</td>
+                </tr>
+                <tr>
+                    <th>Materiales</th>
+                    <td>
+                        <ul>
+                            {% for material in orden.materials %}
+                            <li>{{ material.name }}: {{ material.quantity }}</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="footer">
+            <button onclick="window.print()">Imprimir</button>
+        </div>
+    </div>
+</body>
+</html>

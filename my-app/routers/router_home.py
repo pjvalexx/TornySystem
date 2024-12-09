@@ -83,7 +83,7 @@ def formOrden():
         resultado = procesar_form_orden(dataForm)
         if resultado:
             flash('La orden de trabajo fue registrada correctamente.', 'success')
-            return redirect(url_for('lista_ordenes'))
+            return render_template('public/ordenes/form_orden.html', mostrar_modal=True, order_id=resultado)
         else:
             flash('La orden de trabajo NO fue registrada.', 'error')
             clientes = obtenerClientes()
@@ -92,6 +92,15 @@ def formOrden():
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
+
+@app.route('/confirmar-impresion/<int:order_id>', methods=['GET'])
+def confirmar_impresion(order_id):
+    return render_template('public/ordenes/confirmar_impresion.html', order_id=order_id)
+
+@app.route('/imprimir-orden/<int:order_id>', methods=['GET'])
+def imprimir_orden(order_id):
+    orden = obtenerOrdenPorId(order_id)
+    return render_template('public/ordenes/imprimir_orden.html', orden=orden)
 
 @app.route('/lista-de-ordenes', methods=['GET'])
 def lista_ordenes():

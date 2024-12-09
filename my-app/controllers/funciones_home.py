@@ -159,10 +159,40 @@ def procesar_form_orden(dataForm):
                     cursor.execute(queryMovimiento, (material_id, cantidad, user_id))
                     conexion_MySQLdb.commit()
 
-                return cursor.rowcount
+                return order_id
     except Exception as e:
         print(f"Error en procesar_form_orden: {e}")
         return []
+    
+def obtenerOrdenPorId(order_id):
+    try:
+        with connectionBD() as conexion_MySQLdb:
+            with conexion_MySQLdb.cursor(dictionary=True) as cursor:
+                querySQL = """
+                    SELECT wo.id, wo.client_id, wo.service_type, wo.description, wo.delivery_date, wo.amount, wo.status,
+                           c.name AS client_name, c.address AS client_address, c.phone AS client_phone
+                    FROM work_orders wo
+                    JOIN clients c ON wo.client_id = c.id
+                    WHERE wo.id = %s
+                """
+                cursor.execute(querySQL, (order_id,))
+                orden = cursor.fetchone()
+
+                # Obtener los materiales utilizados en la orden de trabajo
+                queryMaterials = """
+                    SELECT wom.material_id, m.name, wom.quantity
+                    FROM work_order_materials wom
+                    JOIN materials m ON wom.material_id = m.id
+                    WHERE wom.work_order_id = %s
+                """
+                cursor.execute(queryMaterials, (order_id,))
+                materiales = cursor.fetchall()
+
+                orden['materials'] = materiales
+                return orden
+    except Exception as e:
+        print(f"Error en obtenerOrdenPorId: {e}")
+        return None
 
 def obtenerOrdenes():
     try:

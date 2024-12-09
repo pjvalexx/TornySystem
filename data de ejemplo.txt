@@ -1,0 +1,46 @@
+-- Insertar clientes individuales
+INSERT INTO clients (name, address, phone) VALUES
+    ('Luis Martínez', 'Calle Los Olivos 45, Caracas', '04141112233'),
+    ('María Gómez', 'Av. Libertador 123, Valencia', '04141234455'),
+    ('Carlos Rodríguez', 'Sector La Trinidad, Barquisimeto', '04141236677'),
+    ('Ana Pérez', 'Urbanización Las Villas, Maracay', '04241115544'),
+    ('Juan Hernández', 'Calle Bolívar 78, Mérida', '04141117788'),
+    ('Beatriz Sánchez', 'Av. Andrés Bello, Maturín', '04241239900'),
+    ('Pedro Ramírez', 'Sector El Paraíso, Caracas', '04141112244'),
+    ('Lucía Fernández', 'Zona Centro, Puerto Ordaz', '04241114466'),
+    ('José Castillo', 'Urbanización La Mora, Cumaná', '04141238822'),
+    ('Carolina Díaz', 'Calle Principal, Porlamar', '04141116699');
+
+-- Insertar proveedores
+INSERT INTO suppliers (name, address, phone, email) VALUES
+    ('MetalPro Supplies', 'Av. Industrial 123, Caracas', '04141234567', 'info@metalpro.com'),
+    ('SteelWorks Central', 'Zona Industrial Norte, Valencia', '04141112233', 'sales@steelworks.com'),
+    ('Durasteel Distributors', 'Calle Bolívar 45, Barquisimeto', '04241114455', 'contact@durasteel.com'),
+    ('InoxPlus Co.', 'Zona Industrial Este, Maracay', '04242223344', 'support@inoxplus.com'),
+    ('BronMetal Distribution', 'Av. Principal 78, Puerto La Cruz', '04241235566', 'bronmetal@distribution.com');
+
+-- Insertar materiales asociados a proveedores
+INSERT INTO materials (name, description, quantity, unit, minimum_stock, supplier_id) VALUES
+    ('Barras redondas Ø25 mm', 'Acero al carbono, Marca MetalPro', 100, 'unidades', 10, 1),
+    ('Placas de 10 mm', 'Acero al carbono, Marca SteelWorks', 50, 'unidades', 5, 2),
+    ('Barras redondas Ø20 mm', 'Acero inoxidable, Marca InoxPlus', 80, 'unidades', 10, 4),
+    ('Tubos Ø50 mm', 'Acero inoxidable, Marca Durasteel', 40, 'unidades', 5, 3),
+    ('Bloques 100x100x50 mm', 'Hierro fundido, Marca MetalPro', 25, 'unidades', 5, 1),
+    ('Placas de 5 mm', 'Aluminio, Marca AluLight', 60, 'unidades', 5, 5),
+    ('Barras redondas Ø50 mm', 'Aluminio, Marca MetalAir', 40, 'unidades', 5, 5),
+    ('Barras Ø40 mm', 'Bronce, Marca BronMetal', 30, 'unidades', 5, 5),
+    ('Barras redondas Ø20 mm', 'Latón, Marca LatonTech', 50, 'unidades', 10, 5),
+    ('Tubos Ø25 mm', 'Cobre, Marca CopperBase', 70, 'unidades', 10, 3);
+
+-- Insertar órdenes de trabajo
+INSERT INTO work_orders (client_id, service_type, description, delivery_date, amount, status) VALUES
+    (1, 'Fabricacion', 'Fabricación de un eje de transmisión de acero Ø25 mm, longitud 500 mm.', '2024-12-10', 150.00, 'Pendiente'),
+    (2, 'Rectificacion', 'Rectificación de un volante de motor diésel, diámetro 300 mm.', '2024-12-12', 80.00, 'En Proceso'),
+    (3, 'Reparacion', 'Reparación de una hélice de bronce para barco, reparación de aspas dañadas.', '2024-12-15', 200.00, 'Pendiente'),
+    (4, 'Fabricacion', 'Fabricación de un adaptador de aluminio para máquina CNC, 100x100x10 mm.', '2024-12-20', 120.00, 'Pendiente'),
+    (5, 'Reparacion', 'Reparación de tornillo sin fin de acero inoxidable, ajuste y soldadura.', '2024-12-18', 180.00, 'Pendiente'),
+    (6, 'Rectificacion', 'Rectificación de una brida de hierro fundido, diámetro interno 120 mm.', '2024-12-14', 90.00, 'En Proceso'),
+    (7, 'Fabricacion', 'Fabricación de un acople mecánico de acero al carbono, Ø50 mm.', '2024-12-25', 130.00, 'Pendiente'),
+    (8, 'Reparacion', 'Reparación de cilindro hidráulico, reemplazo de sellos y pulido interno.', '2024-12-22', 250.00, 'Pendiente'),
+    (9, 'Rectificacion', 'Rectificación de una polea industrial, diámetro 200 mm.', '2024-12-13', 75.00, 'Completado'),
+    (10, 'Fabricacion', 'Fabricación de tuerca hexagonal de bronce, rosca M20.', '2024-12-28', 50.00, 'Pendiente');
