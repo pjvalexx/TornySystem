@@ -10,7 +10,7 @@ def connectionBD():
         connection = mysql.connector.connect(
             host="localhost",
             user="root",
-            port="3306",
+            port="3307",
             passwd="",
             database="torny_db",
             charset='utf8mb4',
