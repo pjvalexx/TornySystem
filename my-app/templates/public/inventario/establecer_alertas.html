@@ -1,0 +1,37 @@
+{% extends 'public/base_cpanel.html' %}
+{% block title %}Establecer Alertas de Stock{% endblock %}
+{% block body %}
+<div class="card" style="border-radius: 0px !important">
+  <div class="row justify-content-center mb-2">
+    <div class="col-md-12">
+      <h3 class="text-center mt-5 mb-3">ESTABLECER ALERTAS DE STOCK</h3>
+      <hr />
+    </div>
+  </div>
+  <div class="row justify-content-center mb-2">
+    <div class="col-md-10">
+      <form class="form-horizontal mx-auto" method="POST" action="/establecer-alertas" autocomplete="off">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <label for="material_id" class="form-label">Material</label>
+              <select name="material_id" class="form-control" required>
+                {% for material in materiales %}
+                <option value="{{ material.id }}">{{ material.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label for="minimum_stock" class="form-label">Stock Mínimo</label>
+              <input type="number" name="minimum_stock" class="form-control" required />
+            </div>
+          </div>
+          <div class="mb-3 mt-4 text-center">
+            <button type="submit" class="btn rounded-pill btn-primary">Establecer Alerta</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

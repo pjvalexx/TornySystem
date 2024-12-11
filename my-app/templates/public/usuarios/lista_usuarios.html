@@ -1,9 +1,7 @@
 {% extends 'public/base_cpanel.html' %}
-<!--Cambiando el title-->
 {% block title %}Crud - Python 🐍 | Lista de Usuarios{% endblock %}
-<!---->
-{% block body %} {% if (resp_usuariosBD) %}
-
+{% block body %}
+{% if (resp_usuariosBD) %}
 <div class="card content_consignaciones" style="border-radius: 0px !important">
   <section id="respuestaFiltroMes">
     <h2 class="text-center mt-5 mb-5">
@@ -16,22 +14,32 @@
           <tr style="background-color: #ddd">
             <th>Usuario</th>
             <th>Email</th>
-            <th>Fecha de creaci&oacute;n</th>
-            <th>Accci&oacute;n</th>
+            <th>Fecha de creación</th>
+            <th>Rol</th>
+            <th>Acción</th>
           </tr>
         </thead>
         <tbody>
           {% for usuario in resp_usuariosBD %}
           <tr>
-            <td>{{ usuario.name_surname}}</td>
-            <td>{{ usuario.email_user}}</td>
-            <td>{{ usuario.created_user}}</td>
+            <td>{{ usuario.name_surname }}</td>
+            <td>{{ usuario.email_user }}</td>
+            <td>{{ usuario.created_user }}</td>
             <td>
-              <button
-                class="btn rounded-pill btn-danger"
-                onclick="eliminarUsuario('{{ usuario.id }}');">
-                <i class="bi bi-trash3"></i>
-                Eliminar
+              <form action="{{ url_for('asignarRol') }}" method="POST">
+                <input type="hidden" name="user_id" value="{{ usuario.id }}">
+                <select name="role_id" class="form-select" {% if usuario.email_user == 'admin@gmail.com' %}disabled{% endif %}>
+                  <option value="" {% if usuario.role_id is none %}selected{% endif %}>SIN ROL</option>
+                  <option value="1" {% if usuario.role_id == 1 %}selected{% endif %}>Administrador</option>
+                  <option value="2" {% if usuario.role_id == 2 %}selected{% endif %}>Asistente de Operaciones</option>
+                  <option value="3" {% if usuario.role_id == 3 %}selected{% endif %}>Gestor de Inventario</option>
+                </select>
+                <button type="submit" class="btn btn-primary btn-sm mt-2" {% if usuario.email_user == 'admin@gmail.com' %}disabled{% endif %}>Asignar</button>
+              </form>
+            </td>
+            <td>
+              <button class="btn rounded-pill btn-danger" onclick="eliminarUsuario('{{ usuario.id }}');" {% if usuario.email_user == 'admin@gmail.com' %}disabled{% endif %}>
+                <i class="bi bi-trash3"></i> Eliminar
               </button>
             </td>
           </tr>
@@ -45,15 +53,12 @@
 <div class="container mt-3 mb-3" style="width: 100% !important">
   <div class="row justify-content-md-center mb-2">
     <div class="col-12">
-      <h2 class="text-center">No hay usuarios 😭</h2>
+      <h2 class="text-center">No hay usuarios </h2>
     </div>
   </div>
 </div>
 {% endif %}
-<!--Fin del Block-->
 {% endblock %}
-
-<!--Script Custom-->
 {% block customJS %}
 <script>
   function eliminarUsuario(id) {

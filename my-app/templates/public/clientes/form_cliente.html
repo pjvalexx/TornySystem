@@ -1,0 +1,39 @@
+{% extends 'public/base_cpanel.html' %}
+{% block title %}Registrar Cliente{% endblock %}
+{% block body %}
+<div class="card" style="border-radius: 0px !important">
+  <div class="row justify-content-center mb-2">
+    <div class="col-md-12">
+      <h3 class="text-center mt-5 mb-3">REGISTRAR CLIENTE</h3>
+      <hr />
+    </div>
+  </div>
+  <div class="row justify-content-center mb-2">
+    <div class="col-md-10">
+      <form class="form-horizontal mx-auto" method="POST" action="/form-registrar-cliente" autocomplete="off">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <label for="name" class="form-label">Nombre</label>
+              <input type="text" name="name" class="form-control" required />
+            </div>
+            <div class="col-md-6">
+              <label for="address" class="form-label">Dirección</label>
+              <input type="text" name="address" class="form-control" required />
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-md-6">
+              <label for="phone" class="form-label">Teléfono</label>
+              <input type="text" name="phone" class="form-control" required />
+            </div>
+          </div>
+          <div class="mb-3 mt-4 text-center">
+            <button type="submit" class="btn rounded-pill btn-primary">Guardar Cliente</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

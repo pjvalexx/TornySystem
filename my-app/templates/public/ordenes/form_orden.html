@@ -1,0 +1,204 @@
+{% extends 'public/base_cpanel.html' %}
+{% block title %}Crear Orden de Trabajo{% endblock %}
+{% block body %}
+<div class="card" style="border-radius: 0px !important">
+  <div class="row justify-content-center mb-2">
+    <div class="col-md-12">
+      <h3 class="text-center mt-5 mb-3">CREAR ORDEN DE TRABAJO</h3>
+      <hr />
+    </div>
+  </div>
+  <div class="row justify-content-center mb-2">
+    <div class="col-md-10">
+      <form class="form-horizontal mx-auto" method="POST" action="/form-registrar-orden" autocomplete="off">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <label for="client_id" class="form-label">Cliente</label>
+              <select name="client_id" class="form-select" required>
+                {% for cliente in clientes %}
+                <option value="{{ cliente.id }}">{{ cliente.name }} - {{ cliente.address }} - {{ cliente.phone }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label for="service_type" class="form-label">Tipo de Servicio</label>
+              <select name="service_type" class="form-select" required>
+                <option value="Fabricacion">Fabricación</option>
+                <option value="Rectificacion">Rectificación</option>
+                <option value="Reparacion">Reparación</option>
+              </select>
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-md-12">
+              <label for="description" class="form-label">Descripción</label>
+              <textarea name="description" class="form-control" rows="3" required></textarea>
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-md-6">
+              <label for="delivery_date" class="form-label">Fecha de Entrega</label>
+              <input type="date" name="delivery_date" class="form-control" required />
+            </div>
+            <div class="col-md-6">
+              <label for="materials" class="form-label">Materiales</label>
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#materialsModal">Seleccionar Materiales</button>
+              <div id="selected-materials" class="mt-2"></div>
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-md-6">
+              <label for="amount" class="form-label">Monto</label>
+              <input type="number" name="amount" class="form-control" required />
+            </div>
+          </div>
+          <div class="mb-3 mt-4 text-center">
+            <button type="submit" class="btn rounded-pill btn-primary">Guardar Orden</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para seleccionar materiales -->
+<div class="modal fade" id="materialsModal" tabindex="-1" aria-labelledby="materialsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="materialsModalLabel">Seleccionar Materiales</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Material</th>
+              <th>Cantidad Disponible</th>
+              <th>Cantidad a Usar</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for material in materiales %}
+            <tr>
+              <td>{{ material.name }}</td>
+              <td>{{ material.quantity }} {{ material.unit }}</td>
+              <td>
+                <input type="number" class="form-control material-quantity" data-material-id="{{ material.id }}" min="1" max="{{ material.quantity }}">
+              </td>
+              <td>
+                <button type="button" class="btn btn-success add-material" data-material-id="{{ material.id }}" data-material-name="{{ material.name }}">Añadir</button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <h5 class="mt-4">Materiales Seleccionados</h5>
+        <div id="selected-materials-modal"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" id="confirm-materials">Confirmar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if mostrar_modal %}
+<!-- Modal para confirmar impresión -->
+<div class="modal fade show" id="confirmarImpresionModal" tabindex="-1" aria-labelledby="confirmarImpresionModalLabel" aria-modal="true" role="dialog" style="display: block;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmarImpresionModalLabel">Orden de Trabajo Registrada</h5>
+      </div>
+      <div class="modal-body">
+        La orden de trabajo ha sido registrada correctamente. ¿Desea imprimir la orden de trabajo?
+      </div>
+      <div class="modal-footer">
+        <a href="{{ url_for('imprimir_orden', order_id=order_id) }}" target="_blank" class="btn btn-primary" onclick="cerrarModal()">Imprimir</a>
+        <a href="{{ url_for('lista_ordenes') }}" class="btn btn-secondary">No, gracias</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block customJS %}
+<script>
+  function cerrarModal() {
+    const modal = bootstrap.Modal.getInstance(document.getElementById('confirmarImpresionModal'));
+    modal.hide();
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const selectedMaterials = {};
+
+    document.querySelectorAll('.add-material').forEach(button => {
+      button.addEventListener('click', function() {
+        const materialId = this.getAttribute('data-material-id');
+        const materialName = this.getAttribute('data-material-name');
+        const quantityInput = document.querySelector(`.material-quantity[data-material-id="${materialId}"]`);
+        const quantity = parseInt(quantityInput.value);
+
+        if (quantity && quantity > 0 && quantity <= parseInt(quantityInput.max)) {
+          selectedMaterials[materialId] = { name: materialName, quantity: quantity };
+          updateSelectedMaterials();
+        } else {
+          alert('Por favor, ingrese una cantidad válida.');
+        }
+      });
+    });
+
+    document.getElementById('confirm-materials').addEventListener('click', function() {
+      const selectedMaterialsContainer = document.getElementById('selected-materials');
+      selectedMaterialsContainer.innerHTML = '';
+
+      for (const [materialId, material] of Object.entries(selectedMaterials)) {
+        const materialElement = document.createElement('div');
+        materialElement.textContent = `${material.name}: ${material.quantity}`;
+        selectedMaterialsContainer.appendChild(materialElement);
+
+        const hiddenMaterialInput = document.createElement('input');
+        hiddenMaterialInput.type = 'hidden';
+        hiddenMaterialInput.name = 'materials[]';
+        hiddenMaterialInput.value = materialId;
+        selectedMaterialsContainer.appendChild(hiddenMaterialInput);
+
+        const hiddenQuantityInput = document.createElement('input');
+        hiddenQuantityInput.type = 'hidden';
+        hiddenQuantityInput.name = `quantities[${materialId}]`;
+        hiddenQuantityInput.value = material.quantity;
+        selectedMaterialsContainer.appendChild(hiddenQuantityInput);
+      }
+
+      const modal = bootstrap.Modal.getInstance(document.getElementById('materialsModal'));
+      modal.hide();
+    });
+
+    function updateSelectedMaterials() {
+      const selectedMaterialsContainer = document.getElementById('selected-materials-modal');
+      selectedMaterialsContainer.innerHTML = '';
+
+      for (const [materialId, material] of Object.entries(selectedMaterials)) {
+        const materialElement = document.createElement('div');
+        materialElement.textContent = `${material.name}: ${material.quantity}`;
+        selectedMaterialsContainer.appendChild(materialElement);
+
+        const removeButton = document.createElement('button');
+        removeButton.type = 'button';
+        removeButton.className = 'btn btn-danger btn-sm ms-2';
+        removeButton.textContent = 'Eliminar';
+        removeButton.addEventListener('click', function() {
+          delete selectedMaterials[materialId];
+          updateSelectedMaterials();
+        });
+        materialElement.appendChild(removeButton);
+      }
+    }
+  });
+</script>
+{% endblock %}

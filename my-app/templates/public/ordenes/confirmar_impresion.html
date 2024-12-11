@@ -1,0 +1,20 @@
+{% extends 'public/base_cpanel.html' %}
+{% block title %}Confirmar Impresión{% endblock %}
+{% block body %}
+<div class="modal fade show" id="confirmarImpresionModal" tabindex="-1" aria-labelledby="confirmarImpresionModalLabel" aria-modal="true" role="dialog" style="display: block;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmarImpresionModalLabel">Orden de Trabajo Registrada</h5>
+      </div>
+      <div class="modal-body">
+        La orden de trabajo ha sido registrada correctamente. ¿Desea imprimir la orden de trabajo?
+      </div>
+      <div class="modal-footer">
+        <a href="{{ url_for('imprimir_orden', order_id=order_id) }}" target="_blank" class="btn btn-primary" onclick="$('#confirmarImpresionModal').modal('hide');">Imprimir</a>
+        <a href="{{ url_for('lista_ordenes') }}" class="btn btn-secondary">No, gracias</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

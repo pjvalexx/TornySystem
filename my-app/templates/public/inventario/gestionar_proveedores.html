@@ -1,0 +1,77 @@
+{% extends 'public/base_cpanel.html' %}
+{% block title %}Gestionar Proveedores de Inventario{% endblock %}
+{% block body %}
+<div class="card" style="border-radius: 0px !important">
+  <div class="row justify-content-center mb-2">
+    <div class="col-md-12">
+      <h3 class="text-center mt-5 mb-3">GESTIONAR PROVEEDORES DE INVENTARIO</h3>
+      <hr />
+    </div>
+  </div>
+  <div class="row justify-content-center mb-2">
+    <div class="col-md-10">
+      <form class="form-horizontal mx-auto" method="POST" action="/gestionar-proveedores" autocomplete="off">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <label for="name" class="form-label">Nombre</label>
+              <input type="text" name="name" class="form-control" required />
+            </div>
+            <div class="col-md-6">
+              <label for="address" class="form-label">Dirección</label>
+              <input type="text" name="address" class="form-control" required />
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-md-6">
+              <label for="phone" class="form-label">Teléfono</label>
+              <input type="text" name="phone" class="form-control" required />
+            </div>
+            <div class="col-md-6">
+              <label for="email" class="form-label">Correo Electrónico</label>
+              <input type="email" name="email" class="form-control" required />
+            </div>
+          </div>
+          <div class="mb-3 mt-4 text-center">
+            <button type="submit" class="btn rounded-pill btn-primary">Guardar Proveedor</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="row justify-content-center mb-2">
+    <div class="col-md-12">
+      <h3 class="text-center mt-5 mb-3">LISTA DE PROVEEDORES</h3>
+      <hr />
+    </div>
+  </div>
+  <div class="row justify-content-center mb-2">
+    <div class="col-md-10">
+      <div class="table-responsive text-nowrap">
+        <table class="table table-hover">
+          <thead>
+            <tr style="background-color: #ddd">
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Dirección</th>
+              <th>Teléfono</th>
+              <th>Correo Electrónico</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for proveedor in proveedores %}
+            <tr>
+              <td>{{ proveedor.id }}</td>
+              <td>{{ proveedor.name }}</td>
+              <td>{{ proveedor.address }}</td>
+              <td>{{ proveedor.phone }}</td>
+              <td>{{ proveedor.email }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

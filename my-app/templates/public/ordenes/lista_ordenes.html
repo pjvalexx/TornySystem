@@ -1,0 +1,112 @@
+{% extends 'public/base_cpanel.html' %}
+{% block title %}Lista de Órdenes de Trabajo{% endblock %}
+{% block body %}
+{% if (ordenes) %}
+<div class="card content_consignaciones" style="border-radius: 0px !important">
+  <section id="respuestaFiltroMes">
+    <h2 class="text-center mt-5 mb-5">
+      Lista de Órdenes de Trabajo
+      <hr />
+    </h2>
+    <div class="table-responsive text-nowrap">
+      <table class="table table-hover">
+        <thead>
+          <tr style="background-color: #ddd">
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Tipo de Servicio</th>
+            <th>Descripción</th>
+            <th>Fecha de Entrega</th>
+            <th>Monto</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for orden in ordenes %}
+          <tr>
+            <td>{{ orden.id }}</td>
+            <td>{{ orden.client_name }}</td>
+            <td>{{ orden.service_type }}</td>
+            <td>{{ orden.description }}</td>
+            <td>{{ orden.delivery_date }}</td>
+            <td>{{ orden.amount }}</td>
+            <td>
+              <span class="badge {% if orden.status == 'Pendiente' %}bg-warning{% elif orden.status == 'En Proceso' %}bg-orange{% elif orden.status == 'Completado' %}bg-primary{% elif orden.status == 'Entregado' %}bg-success{% elif orden.status == 'Cancelado' %}bg-danger{% endif %}">
+                {{ orden.status }}
+              </span>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+{% else %}
+<div class="container mt-3 mb-3" style="width: 100% !important">
+  <div class="row justify-content-md-center mb-2">
+    <div class="col-12">
+      <h2 class="text-center">No hay órdenes de trabajo </h2>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- Gráfico de métricas -->
+<div class="card mt-5" style="border-radius: 0px !important">
+  <div class="card-body">
+    <h3 class="text-center">Métricas de Órdenes de Trabajo</h3>
+    <canvas id="ordenesChart"></canvas>
+  </div>
+</div>
+{% endblock %}
+{% block customJS %}
+<script src="{{ url_for('static', filename='assets/js/Chart.min.js') }}"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Jinja2 code to JSON
+    var estados = {{ estados | tojson | safe }};
+    
+    // JavaScript code
+    var ctx = document.getElementById('ordenesChart').getContext('2d');
+    var ordenesChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Pendiente', 'En Proceso', 'Completado', 'Entregado', 'Cancelado'],
+        datasets: [{
+          label: 'Órdenes de Trabajo',
+          data: [
+            estados['Pendiente'],
+            estados['En Proceso'],
+            estados['Completado'],
+            estados['Entregado'],
+            estados['Cancelado']
+          ],
+          backgroundColor: [
+            'rgba(255, 193, 7, 0.6)',
+            'rgba(253, 126, 20, 0.6)',
+            'rgba(0, 123, 255, 0.6)',
+            'rgba(40, 167, 69, 0.6)',
+            'rgba(220, 53, 69, 0.6)'
+          ],
+          borderColor: [
+            'rgba(255, 193, 7, 1)',
+            'rgba(253, 126, 20, 1)',
+            'rgba(0, 123, 255, 1)',
+            'rgba(40, 167, 69, 1)',
+            'rgba(220, 53, 69, 1)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  });
+</script>
+{% endblock %}

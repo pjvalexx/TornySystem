@@ -1,0 +1,54 @@
+{% extends 'public/base_cpanel.html' %}
+{% block title %}Inventario{% endblock %}
+{% block body %}
+{% if (materiales) %}
+<div class="card content_consignaciones" style="border-radius: 0px !important">
+  <section id="respuestaFiltroMes">
+    <h2 class="text-center mt-5 mb-5">
+      Inventario
+      <hr />
+    </h2>
+    <div class="table-responsive text-nowrap">
+      <table class="table table-hover">
+        <thead>
+          <tr style="background-color: #ddd">
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Cantidad</th>
+            <th>Unidad</th>
+            <th>Proveedor</th>
+            <th>Stock Mínimo</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for material in materiales %}
+          <tr>
+            <td>{{ material.id }}</td>
+            <td>{{ material.name }}</td>
+            <td>{{ material.description }}</td>
+            <td>{{ material.quantity }}</td>
+            <td>{{ material.unit }}</td>
+            <td>{{ material.supplier_id }}</td>
+            <td>{{ material.minimum_stock }}</td>
+            <td>
+              <a href="/modificar-stock/{{ material.id }}" class="btn btn-success btn-sm">Modificar Stock</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+{% else %}
+<div class="container mt-3 mb-3" style="width: 100% !important">
+  <div class="row justify-content-md-center mb-2">
+    <div class="col-12">
+      <h2 class="text-center">No hay materiales</h2>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

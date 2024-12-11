@@ -14,7 +14,7 @@ async function buscadorTable(tableId) {
   try {
     const response = await axios.post(url, dataPeticion, { headers });
     if (!response.status) {
-      console.log(`HTTP error! status: ${response.status} 😭`);
+      console.log(`HTTP error! status: ${response.status}`);
     }
 
     if (response.data.fin === 0) {
