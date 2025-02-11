@@ -51,7 +51,8 @@ CREATE TABLE clients (
     surname VARCHAR(100) NOT NULL,
     address VARCHAR(255) NOT NULL,
     phone VARCHAR(20) NOT NULL,
-    documento VARCHAR(20) NOT NULL
+    documento VARCHAR(20) NOT NULL,
+    is_deleted BOOLEAN DEFAULT FALSE
 );
 
 -- Crear tabla de órdenes de trabajo
@@ -118,6 +119,7 @@ CREATE TABLE work_order_materials (
     FOREIGN KEY (work_order_id) REFERENCES work_orders(id),
     FOREIGN KEY (material_id) REFERENCES materials(id)
 );
+
 
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;

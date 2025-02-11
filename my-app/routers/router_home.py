@@ -198,32 +198,31 @@ def formCliente():
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
 
-@app.route('/lista-de-clientes', methods=['GET'])
+@app.route('/lista-clientes', methods=['GET'])
 def lista_clientes():
     if 'conectado' in session:
-        if session.get('role_id') == 1 or session.get('role_id') == 2:  # Verificar si el usuario es administrador
-            clientes = obtenerClientes()
-            return render_template('public/clientes/lista_clientes.html', clientes=clientes)
-        else:
-            flash('No tienes permiso para acceder a esta página.', 'error')
-        return redirect(url_for('inicio')) 
+        with connectionBD() as conexion_MySQLdb:
+            with conexion_MySQLdb.cursor(dictionary=True) as cursor:
+                querySQL = "SELECT * FROM clients WHERE is_deleted = FALSE"
+                cursor.execute(querySQL)
+                clientes = cursor.fetchall()
+        return render_template('public/clientes/lista_clientes.html', clientes=clientes)
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
     
 @app.route('/borrar-cliente/<int:id>', methods=['GET'])
-def borrarCliente(id):
+def borrar_cliente(id):
     if 'conectado' in session:
-        resultado = eliminarCliente(id)
+        resultado = eliminar_cliente(id)
         if resultado:
             flash('El cliente fue eliminado correctamente.', 'success')
         else:
             flash('Error, El cliente NO fue eliminado.', 'error')
-        return redirect(url_for('listaClientes'))
+        return redirect(url_for('lista_clientes'))
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
-
 # Rutas del módulo de inventario
 
 @app.route('/inventario', methods=['GET'])
