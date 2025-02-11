@@ -29,21 +29,6 @@ def borrarUsuario(id):
         flash('El Usuario fue eliminado correctamente', 'success')
         return redirect(url_for('usuarios'))
 
-@app.route('/borrar-empleado/<string:id_empleado>/<string:foto_empleado>', methods=['GET'])
-def borrarEmpleado(id_empleado, foto_empleado):
-    resp = eliminarEmpleado(id_empleado, foto_empleado)
-    if resp:
-        flash('El Empleado fue eliminado correctamente', 'success')
-        return redirect(url_for('lista_empleados'))
-
-@app.route("/descargar-informe-empleados/", methods=['GET'])
-def reporteBD():
-    if 'conectado' in session:
-        return generarReporteExcel()
-    else:
-        flash('primero debes iniciar sesión.', 'error')
-        return redirect(url_for('inicio'))
-
 @app.route('/asignar-rol', methods=['POST'])
 def asignarRol():
     if 'conectado' in session and session.get('role_id') == 1:  # Verificar si el usuario es administrador
@@ -70,9 +55,13 @@ from controllers.funciones_home import *
 @app.route('/registrar-orden', methods=['GET'])
 def viewFormOrden():
     if 'conectado' in session:
-        clientes = obtenerClientes()
-        materiales = obtenerMateriales()
-        return render_template('public/ordenes/form_orden.html', clientes=clientes, materiales=materiales)
+        if session.get('role_id') == 1 or session.get('role_id') == 2:  # Verificar si el usuario es administrador
+            clientes = obtenerClientes()
+            materiales = obtenerMateriales()
+            return render_template('public/ordenes/form_orden.html', clientes=clientes, materiales=materiales)
+        else:
+            flash('No tienes permiso para acceder a esta página.', 'error')
+            return redirect(url_for('inicio'))
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
@@ -80,17 +69,21 @@ def viewFormOrden():
 @app.route('/form-registrar-orden', methods=['POST'])
 def formOrden():
     if 'conectado' in session:
-        dataForm = request.form.to_dict(flat=False)
-        dataForm['status'] = 'Pendiente'  # Establecer el estado por defecto como "Pendiente"
-        resultado = procesar_form_orden(dataForm)
-        if resultado:
-            flash('La orden de trabajo fue registrada correctamente.', 'success')
-            return render_template('public/ordenes/form_orden.html', mostrar_modal=True, order_id=resultado)
+        if session.get('role_id') == 1 or session.get('role_id') == 2:  # Verificar si el usuario es administrador
+            dataForm = request.form.to_dict(flat=False)
+            dataForm['status'] = 'Pendiente'  # Establecer el estado por defecto como "Pendiente"
+            resultado = procesar_form_orden(dataForm)
+            if resultado:
+                flash('La orden de trabajo fue registrada correctamente.', 'success')
+                return render_template('public/ordenes/form_orden.html', mostrar_modal=True, order_id=resultado)
+            else:
+                flash('La orden de trabajo NO fue registrada.', 'error')
+                clientes = obtenerClientes()
+                materiales = obtenerMateriales()
+                return render_template('public/ordenes/form_orden.html', clientes=clientes, materiales=materiales)
         else:
-            flash('La orden de trabajo NO fue registrada.', 'error')
-            clientes = obtenerClientes()
-            materiales = obtenerMateriales()
-            return render_template('public/ordenes/form_orden.html', clientes=clientes, materiales=materiales)
+            flash('No tienes permiso para acceder a esta página.', 'error')
+            return redirect(url_for('inicio'))
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
@@ -107,20 +100,24 @@ def imprimir_orden(order_id):
 @app.route('/lista-de-ordenes', methods=['GET'])
 def lista_ordenes():
     if 'conectado' in session:
-        ordenes = obtenerOrdenes()
-        # Asegúrate de que todas las órdenes tengan un estado válido
-        for orden in ordenes:
-            if orden['status'] is None:
-                orden['status'] = 'Pendiente'
-        # Contar las órdenes por estado
-        estados = {
-            'Pendiente': len([o for o in ordenes if o['status'] == 'Pendiente']),
-            'En Proceso': len([o for o in ordenes if o['status'] == 'En Proceso']),
-            'Completado': len([o for o in ordenes if o['status'] == 'Completado']),
-            'Entregado': len([o for o in ordenes if o['status'] == 'Entregado']),
-            'Cancelado': len([o for o in ordenes if o['status'] == 'Cancelado'])
-        }
-        return render_template('public/ordenes/lista_ordenes.html', ordenes=ordenes, estados=estados)
+        if session.get('role_id') == 1 or session.get('role_id') == 2:  # Verificar si el usuario es administrador
+            ordenes = obtenerOrdenes()
+            # Asegúrate de que todas las órdenes tengan un estado válido
+            for orden in ordenes:
+                if orden['status'] is None:
+                    orden['status'] = 'Pendiente'
+            # Contar las órdenes por estado
+            estados = {
+                'Pendiente': len([o for o in ordenes if o['status'] == 'Pendiente']),
+                'En Proceso': len([o for o in ordenes if o['status'] == 'En Proceso']),
+                'Completado': len([o for o in ordenes if o['status'] == 'Completado']),
+                'Entregado': len([o for o in ordenes if o['status'] == 'Entregado']),
+                'Cancelado': len([o for o in ordenes if o['status'] == 'Cancelado'])
+            }
+            return render_template('public/ordenes/lista_ordenes.html', ordenes=ordenes, estados=estados)
+        else:
+            flash('No tienes permiso para acceder a esta página.', 'error')
+            return redirect(url_for('inicio'))
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
@@ -128,8 +125,12 @@ def lista_ordenes():
 @app.route('/gestionar-ordenes', methods=['GET'])
 def gestionar_ordenes():
     if 'conectado' in session:
-        ordenes = obtenerOrdenes()
-        return render_template('public/ordenes/gestionar_ordenes.html', ordenes=ordenes)
+        if session.get('role_id') == 1 or session.get('role_id') == 2:  # Verificar si el usuario es administrador
+            ordenes = obtenerOrdenes()
+            return render_template('public/ordenes/gestionar_ordenes.html', ordenes=ordenes)
+        else:
+            flash('No tienes permiso para acceder a esta página.', 'error')
+            return redirect(url_for('inicio'))
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
@@ -174,7 +175,11 @@ def cancelarOrden():
 @app.route('/registrar-cliente', methods=['GET'])
 def viewFormCliente():
     if 'conectado' in session:
-        return render_template('public/clientes/form_cliente.html')
+        if session.get('role_id') == 1 or session.get('role_id') == 2:  # Verificar si el usuario es administrador
+            return render_template('public/clientes/form_cliente.html')
+        else:
+           flash('No tienes permiso para acceder a esta página.', 'error')
+        return redirect(url_for('inicio')) 
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
@@ -196,8 +201,12 @@ def formCliente():
 @app.route('/lista-de-clientes', methods=['GET'])
 def lista_clientes():
     if 'conectado' in session:
-        clientes = obtenerClientes()
-        return render_template('public/clientes/lista_clientes.html', clientes=clientes)
+        if session.get('role_id') == 1 or session.get('role_id') == 2:  # Verificar si el usuario es administrador
+            clientes = obtenerClientes()
+            return render_template('public/clientes/lista_clientes.html', clientes=clientes)
+        else:
+            flash('No tienes permiso para acceder a esta página.', 'error')
+        return redirect(url_for('inicio')) 
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
@@ -333,20 +342,20 @@ def vista_reportes():
 
 @app.route('/reporte-inventario', methods=['GET'])
 def reporte_inventario():
-    if 'conectado' in session:
-        file_path = generar_reporte_inventario()
-        return send_file(file_path, as_attachment=True)
+    file_path = generar_reporte_inventario()
+    if file_path:
+        return send_file(file_path, as_attachment=True, download_name="reporte_inventario.pdf")
     else:
-        flash('Primero debes iniciar sesión.', 'error')
+        flash('Error al generar el reporte de inventario.', 'error')
         return redirect(url_for('inicio'))
 
 @app.route('/reporte-ordenes', methods=['GET'])
 def reporte_ordenes():
-    if 'conectado' in session:
-        file_path = generar_reporte_ordenes()
-        return send_file(file_path, as_attachment=True)
+    file_path = generar_reporte_ordenes()
+    if file_path:
+        return send_file(file_path, as_attachment=True, download_name="reporte_ordenes.pdf")
     else:
-        flash('Primero debes iniciar sesión.', 'error')
+        flash('Error al generar el reporte de órdenes.', 'error')
         return redirect(url_for('inicio'))
     
 

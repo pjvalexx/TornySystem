@@ -10,8 +10,14 @@ from werkzeug.security import check_password_hash
 # Importando controllers para el modulo de login
 from controllers.funciones_login import *
 from controllers.funciones_alertas import *
+
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from datetime import datetime
 PATH_URL_LOGIN = "public/login"
 
+SUPERUSER_KEY = "admin"  # Define la clave de superusuario aquí
 
 @app.route('/', methods=['GET'])
 def inicio():
@@ -32,7 +38,6 @@ def perfil():
     else:
         return redirect(url_for('inicio'))
 
-
 # Crear cuenta de usuario
 @app.route('/register-user', methods=['GET'])
 def cpanelRegisterUser():
@@ -42,13 +47,32 @@ def cpanelRegisterUser():
         return render_template(f'{PATH_URL_LOGIN}/auth_register.html')
 
 
-# Recuperar cuenta de usuario
-@app.route('/recovery-password', methods=['GET'])
+@app.route('/recovery-password', methods=['GET', 'POST'])
 def cpanelRecoveryPassUser():
-    if 'conectado' in session:
-        return redirect(url_for('inicio'))
-    else:
-        return render_template(f'{PATH_URL_LOGIN}/auth_forgot_password.html')
+    if request.method == 'POST':
+        email_user = request.form['email_user']
+        superuser_key = request.form['superuser_key']
+        new_password = request.form['new_password']
+        confirm_password = request.form['confirm_password']
+        
+        if superuser_key == SUPERUSER_KEY:
+            if new_password == confirm_password:
+                hashed_password = generate_password_hash(new_password, method='sha256')
+                
+                # Actualizar la contraseña en la base de datos
+                conexion_MySQLdb = connectionBD()
+                cursor = conexion_MySQLdb.cursor()
+                cursor.execute("UPDATE users SET pass_user=%s WHERE email_user=%s", (hashed_password, email_user))
+                conexion_MySQLdb.commit()
+                
+                flash('Tu contraseña ha sido restablecida correctamente.', 'success')
+                return redirect(url_for('inicio'))
+            else:
+                flash('Las contraseñas no coinciden.', 'error')
+        else:
+            flash('Clave de superusuario incorrecta.', 'error')
+    
+    return render_template(f'{PATH_URL_LOGIN}/auth_recovery_password.html')
 
 
 # Crear cuenta de usuario
