@@ -17,7 +17,7 @@
               <label for="client_id" class="form-label">Cliente</label>
               <select name="client_id" class="form-select" required>
                 {% for cliente in clientes %}
-                <option value="{{ cliente.id }}">{{ cliente.name }} - {{ cliente.phone}}  {{ cliente.address}}</option>
+                <option value="{{ cliente.id }}">{{ cliente.name }} {{ cliente.surname }} {{ cliente.documento}}</option>
                 {% endfor %}
               </select>
             </div>

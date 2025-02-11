@@ -282,3 +282,7 @@ body, h1, h2, h3, h4, h5, h6, p, a, span, div, label, input, button, select, tex
 .table-row-salida {
   background-color: #f8d7da; /* Rojo claro */
 }
+
+.table-row-stock-minimo {
+  background-color: #ffcccc; /* Color de fondo rojo claro */
+}

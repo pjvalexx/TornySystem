@@ -11,19 +11,14 @@
             width: 80%;
             margin: 0 auto;
         }
-        .header, .footer {
-            text-align: center;
-            margin: 20px 0;
-        }
         .content {
             margin: 20px 0;
-        }
-        .content h2 {
-            text-align: center;
         }
         .content table {
             width: 100%;
             border-collapse: collapse;
+            table-layout: fixed; /* Hacer que la tabla tenga un ancho fijo */
+            background-color: #e0f7fa; /* Color de fondo azul claro */
         }
         .content table, .content th, .content td {
             border: 1px solid black;
@@ -31,17 +26,43 @@
         .content th, .content td {
             padding: 10px;
             text-align: left;
+            white-space: nowrap; /* Ajustar el tamaño de las celdas al contenido */
+            width: 20px; /* Ancho fijo de 20px para cada columna */
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .header img {
+            max-width: 150px;
+        }
+        .footer {
+            text-align: center;
+            margin: 20px 0;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>Orden de Trabajo</h1>
-        </div>
         <div class="content">
-            <h2>Detalles de la Orden</h2>
             <table>
+                <tr class="header">
+                    <td style="border: none;">
+                        <img src="{{ url_for('static', filename='assets/img/logoMario.png') }}" alt="Logo">
+                    </td>
+                    <td style="border: none; text-align: center;">
+                        <h1>Orden de Trabajo</h1>
+                    </td>
+                </tr>
+                <tr>
+                    <th>ID de la Orden</th>
+                    <td>{{ orden.id }}</td>
+                </tr>
+                <tr>
+                    <th>Fecha de Emisión</th>
+                    <td>13 de febrero de 2025</td>
+                </tr>
                 <tr>
                     <th>Tipo de Servicio</th>
                     <td>{{ orden.service_type }}</td>

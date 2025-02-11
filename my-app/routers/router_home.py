@@ -7,6 +7,7 @@ from controllers.funciones_home import *
 from controllers.funciones_inventario import *
 from controllers.funciones_reportes import generar_reporte_inventario, generar_reporte_ordenes
 from controllers.funciones_reportes import generar_copia_seguridad
+
 PATH_URL_INVENTARIO = "public/inventario"
 
 @app.route("/lista-de-usuarios", methods=['GET'])
@@ -347,3 +348,16 @@ def reporte_ordenes():
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
+    
+
+# @app.route('/inicio', methods=['GET'])
+# def principal():
+#     if 'conectado' in session:
+#         alertas_ordenes = generar_alertas()
+#         alertas_stock = generar_alertas_stock()
+
+#         return render_template('public/base_cpanel.html', alertas_ordenes=alertas_ordenes, 
+#                                                           alertas_stock=alertas_stock)
+#     else:
+#         flash('Primero debes iniciar sesión.', 'error')
+#         return redirect(url_for('login'))

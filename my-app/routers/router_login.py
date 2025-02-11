@@ -9,13 +9,18 @@ from werkzeug.security import check_password_hash
 
 # Importando controllers para el modulo de login
 from controllers.funciones_login import *
+from controllers.funciones_alertas import *
 PATH_URL_LOGIN = "public/login"
 
 
 @app.route('/', methods=['GET'])
 def inicio():
     if 'conectado' in session:
-        return render_template('public/base_cpanel.html', dataLogin=dataLoginSesion())
+        alertas_ordenes = generar_alertas()
+        alertas_stock = generar_alertas_stock()
+
+        return render_template('public/base_cpanel.html', alertas_ordenes=alertas_ordenes, 
+                                                          alertas_stock=alertas_stock, dataLoginSesion = dataLoginSesion())
     else:
         return render_template(f'{PATH_URL_LOGIN}/base_login.html')
 

@@ -24,7 +24,7 @@
         </thead>
         <tbody>
           {% for material in materiales %}
-          <tr>
+          <tr class="{% if material.quantity <= material.minimum_stock %}table-row-stock-minimo{% endif %}">
             <td>{{ material.id }}</td>
             <td>{{ material.name }}</td>
             <td>{{ material.description }}</td>

@@ -23,7 +23,7 @@
         </thead>
         <tbody>
           {% for orden in ordenes %}
-          <tr>
+          <tr onclick="confirmarImpresion({{ orden.id }})" style="cursor: pointer;">
             <td>{{ orden.id }}</td>
             <td>{{ orden.client_name }}</td>
             <td>{{ orden.service_type }}</td>
@@ -108,5 +108,11 @@
       }
     });
   });
+
+  function confirmarImpresion(orderId) {
+    if (confirm('¿Deseas imprimir esta orden de trabajo?')) {
+      window.location.href = '/imprimir-orden/' + orderId;
+    }
+  }
 </script>
 {% endblock %}

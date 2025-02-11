@@ -9,7 +9,13 @@
   <head>
     {% include 'public/includes/head.html' %}
     <!---->
-    {% block customCSS %} {% endblock %}
+    {% block customCSS %} 
+    <style>
+      .alert-section {
+        margin-bottom: 20px;
+      }
+    </style>
+    {% endblock %}
   </head>
   <body>
     {% include 'public/includes/pre_loader.html' %}
@@ -28,9 +34,39 @@
                 <div class="col-12 text-center">
                   <h1>Buenas Tardes Alexander, Bienvenido a Torny.</h1>
                   <p>Torny es un sistema diseñado para gestionar los servicios del Taller Mario Palacios F.P. Permite Gestionar las ordenes de trabajo, clientes, e inventario.</p>
-                  </ul>
                 </div>
               </div>
+              <!-- Mostrar alertas -->
+              {% if alertas_ordenes or alertas_stock %}
+                <div class="alert-section">
+                  <h3>Alertas de Órdenes de Trabajo</h3>
+                  {% if alertas_ordenes %}
+                    <div class="alert alert-warning" role="alert">
+                      <ul>
+                        {% for alerta in alertas_ordenes %}
+                          <li>{{ alerta }}</li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                  {% else %}
+                    <p>No hay alertas de órdenes de trabajo.</p>
+                  {% endif %}
+                </div>
+                <div class="alert-section">
+                  <h3>Alertas de Stock</h3>
+                  {% if alertas_stock %}
+                    <div class="alert alert-danger" role="alert">
+                      <ul>
+                        {% for alerta in alertas_stock %}
+                          <li>{{ alerta }}</li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                  {% else %}
+                    <p>No hay alertas de stock.</p>
+                  {% endif %}
+                </div>
+              {% endif %}
               <!--fin del bloque-->
               {% endblock %}
             </div>

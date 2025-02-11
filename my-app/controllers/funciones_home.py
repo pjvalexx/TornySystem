@@ -53,12 +53,13 @@ def procesar_form_cliente(dataForm):
         with connectionBD() as conexion_MySQLdb:
             with conexion_MySQLdb.cursor(dictionary=True) as cursor:
                 sql = """
-                    INSERT INTO clients (name, address, phone, documento)
-                    VALUES (%s, %s, %s, %s)
+                    INSERT INTO clients (name, surname, address, phone, documento)
+                    VALUES (%s, %s, %s, %s, %s)
                 """
                 documento = f"{dataForm['tipo_documento']}{dataForm['numero_documento']}"
                 valores = (
                     dataForm['name'],
+                    dataForm['surname'],
                     dataForm['address'],
                     dataForm['phone'],
                     documento
@@ -73,7 +74,7 @@ def obtenerClientes():
     try:
         with connectionBD() as conexion_MySQLdb:
             with conexion_MySQLdb.cursor(dictionary=True) as cursor:
-                querySQL = "SELECT id, name, address, phone, documento FROM clients"
+                querySQL = "SELECT id, name, surname, address, phone, documento FROM clients"
                 cursor.execute(querySQL)
                 clientes = cursor.fetchall()
         return clientes

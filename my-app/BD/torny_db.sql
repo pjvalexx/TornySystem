@@ -48,8 +48,9 @@ INSERT INTO users (id, name_surname, email_user, pass_user, created_user, role_i
 CREATE TABLE clients (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
+    surname VARCHAR(100) NOT NULL,
     address VARCHAR(255) NOT NULL,
-    phone VARCHAR(20) NOT NULL
+    phone VARCHAR(20) NOT NULL,
     documento VARCHAR(20) NOT NULL
 );
 
