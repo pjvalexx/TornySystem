@@ -1,0 +1,26 @@
+{% extends 'public/base_cpanel.html' %}
+{% block title %}Generar Reportes{% endblock %}
+{% block body %}
+<div class="card" style="border-radius: 0px !important">
+  <div class="row justify-content-center mb-2">
+    <div class="col-md-12">
+      <h3 class="text-center mt-5 mb-3">GENERAR REPORTES</h3>
+      <hr />
+    </div>
+  </div>
+  <div class="row justify-content-center mb-2">
+    <div class="col-md-10">
+      <div class="card-body">
+        <div class="row mt-2">
+          <div class="col-md-6">
+            <a href="{{ url_for('reporte_inventario') }}" class="btn btn-primary btn-block">Generar Reporte de Inventario</a>
+          </div>
+          <div class="col-md-6">
+            <a href="{{ url_for('reporte_ordenes') }}" class="btn btn-primary btn-block">Generar Reporte de Órdenes de Trabajo</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

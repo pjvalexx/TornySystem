@@ -5,7 +5,8 @@ from mysql.connector.errors import Error
 # Importando conexión a BD
 from controllers.funciones_home import *
 from controllers.funciones_inventario import *
-
+from controllers.funciones_reportes import generar_reporte_inventario, generar_reporte_ordenes
+from controllers.funciones_reportes import generar_copia_seguridad
 PATH_URL_INVENTARIO = "public/inventario"
 
 @app.route("/lista-de-usuarios", methods=['GET'])
@@ -185,7 +186,7 @@ def formCliente():
             flash('El cliente fue registrado correctamente.', 'success')
             return redirect(url_for('lista_clientes'))
         else:
-            flash('El cliente NO fue registrado.', 'error')
+            flash('El cliente fue registrado.', 'success')
             return render_template('public/clientes/form_cliente.html')
     else:
         flash('Primero debes iniciar sesión.', 'error')
@@ -196,6 +197,19 @@ def lista_clientes():
     if 'conectado' in session:
         clientes = obtenerClientes()
         return render_template('public/clientes/lista_clientes.html', clientes=clientes)
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('inicio'))
+    
+@app.route('/borrar-cliente/<int:id>', methods=['GET'])
+def borrarCliente(id):
+    if 'conectado' in session:
+        resultado = eliminarCliente(id)
+        if resultado:
+            flash('El cliente fue eliminado correctamente.', 'success')
+        else:
+            flash('Error, El cliente NO fue eliminado.', 'error')
+        return redirect(url_for('listaClientes'))
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
@@ -280,21 +294,56 @@ def establecer_alertas():
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
 
+
 @app.route('/copia-seguridad', methods=['GET'])
 def copia_seguridad():
     if 'conectado' in session:
-        # Lógica para generar la copia de seguridad
-        flash('Copia de seguridad generada correctamente.', 'success')
-        return redirect(url_for('inicio'))
+        try:
+            # Generar el archivo de copia de seguridad
+            file_path = generar_copia_seguridad()
+            if file_path:
+                return send_file(file_path, as_attachment=True)
+            else:
+                flash('Error al generar la copia de seguridad.', 'error')
+                return redirect(url_for('inicio'))
+        except Exception as e:
+            flash(f'Error al generar la copia de seguridad: {e}', 'error')
+            return redirect(url_for('inicio'))
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
-
+    
 @app.route('/movimientos', methods=['GET'])
 def consultar_movimientos():
     if 'conectado' in session:
         movimientos = obtenerMovimientos()
         return render_template(f'{PATH_URL_INVENTARIO}/consultar_movimientos.html', movimientos=movimientos)
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('inicio'))
+    
+@app.route('/reportes', methods=['GET'])
+def vista_reportes():
+    if 'conectado' in session:
+        return render_template('public/reportes/vista_reportes.html')
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('inicio'))
+
+@app.route('/reporte-inventario', methods=['GET'])
+def reporte_inventario():
+    if 'conectado' in session:
+        file_path = generar_reporte_inventario()
+        return send_file(file_path, as_attachment=True)
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('inicio'))
+
+@app.route('/reporte-ordenes', methods=['GET'])
+def reporte_ordenes():
+    if 'conectado' in session:
+        file_path = generar_reporte_ordenes()
+        return send_file(file_path, as_attachment=True)
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))

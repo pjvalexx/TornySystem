@@ -32,31 +32,6 @@ def lista_usuariosBD():
         return []
 
 
-# Eliminar uEmpleado
-def eliminarEmpleado(id_empleado, foto_empleado):
-    try:
-        with connectionBD() as conexion_MySQLdb:
-            with conexion_MySQLdb.cursor(dictionary=True) as cursor:
-                querySQL = "DELETE FROM tbl_empleados WHERE id_empleado=%s"
-                cursor.execute(querySQL, (id_empleado,))
-                conexion_MySQLdb.commit()
-                resultado_eliminar = cursor.rowcount
-
-                if resultado_eliminar:
-                    # Eliminadon foto_empleado desde el directorio
-                    basepath = path.dirname(__file__)
-                    url_File = path.join(
-                        basepath, '../static/fotos_empleados', foto_empleado)
-
-                    if path.exists(url_File):
-                        remove(url_File)  # Borrar foto desde la carpeta
-
-        return resultado_eliminar
-    except Exception as e:
-        print(f"Error en eliminarEmpleado : {e}")
-        return []
-
-
 # Eliminar usuario
 def eliminarUsuario(id):
     try:
@@ -78,17 +53,18 @@ def procesar_form_cliente(dataForm):
         with connectionBD() as conexion_MySQLdb:
             with conexion_MySQLdb.cursor(dictionary=True) as cursor:
                 sql = """
-                    INSERT INTO clients (name, address, phone)
-                    VALUES (%s, %s, %s)
+                    INSERT INTO clients (name, address, phone, documento)
+                    VALUES (%s, %s, %s, %s)
                 """
+                documento = f"{dataForm['tipo_documento']}{dataForm['numero_documento']}"
                 valores = (
                     dataForm['name'],
                     dataForm['address'],
-                    dataForm['phone']
+                    dataForm['phone'],
+                    documento
                 )
                 cursor.execute(sql, valores)
                 conexion_MySQLdb.commit()
-                return cursor.rowcount
     except Exception as e:
         print(f"Error en procesar_form_cliente: {e}")
         return []
@@ -97,13 +73,26 @@ def obtenerClientes():
     try:
         with connectionBD() as conexion_MySQLdb:
             with conexion_MySQLdb.cursor(dictionary=True) as cursor:
-                querySQL = "SELECT id, name, address, phone FROM clients"
+                querySQL = "SELECT id, name, address, phone, documento FROM clients"
                 cursor.execute(querySQL)
                 clientes = cursor.fetchall()
         return clientes
     except Exception as e:
         print(f"Error en obtenerClientes: {e}")
         return []
+    
+def eliminarCliente(id):
+    try:
+        with connectionBD() as conexion_MySQLdb:
+            with conexion_MySQLdb.cursor(dictionary=True) as cursor:
+                querySQL = "DELETE FROM clients WHERE id=%s"
+                cursor.execute(querySQL, (id,))
+                conexion_MySQLdb.commit()
+                resultado_eliminar = cursor.rowcount
+        return resultado_eliminar > 0
+    except Exception as e:
+        print(f"Error en eliminarCliente: {e}")
+        return False
 
 def procesar_form_orden(dataForm):
     try:

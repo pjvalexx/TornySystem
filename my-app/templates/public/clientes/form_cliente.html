@@ -25,7 +25,19 @@
           <div class="row mt-2">
             <div class="col-md-6">
               <label for="phone" class="form-label">Teléfono</label>
-              <input type="text" name="phone" class="form-control" required />
+              <input type="text" name="phone" class="form-control"  required />
+            </div>
+            <div class="col-md-6">
+              <label for="documento" class="form-label">Documento</label>
+              <div class="input-group">
+                <select name="tipo_documento" class="form-select" style="width: 3em; padding-right: 0; padding-left: 0; text-align: center;" required>
+                  <option value="V">V</option>
+                  <option value="J">J</option>
+                  <option value="G">G</option>
+                  <option value="E">E</option>
+                </select>
+                <input type="text" name="numero_documento" class="form-control" required />
+              </div>
             </div>
           </div>
           <div class="mb-3 mt-4 text-center">

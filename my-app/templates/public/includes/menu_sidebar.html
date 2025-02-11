@@ -85,6 +85,15 @@
       </a>
     </li>
     <li class="menu-header small text-uppercase">
+      <span class="menu-header-text">Reportes</span>
+    </li>
+    <li class="menu-item {% if request.path == '/reportes' %} active {% endif %}">
+      <a href="{{ url_for('vista_reportes') }}" class="menu-link">
+        <i class="menu-icon bi bi-file-earmark-text"></i>
+        <div data-i18n="Basic">Generar Reportes</div>
+      </a>
+    </li>
+    <li class="menu-header small text-uppercase">
       <span class="menu-header-text">Configuración</span>
     </li>
     <li class="menu-item {% if request.path == '/lista-de-usuarios' %} active {% endif %}">

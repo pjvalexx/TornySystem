@@ -16,7 +16,7 @@
             <th>Nombre</th>
             <th>Dirección</th>
             <th>Teléfono</th>
-            <th>Acción</th>
+            <th>Documento</th>
           </tr>
         </thead>
         <tbody>
@@ -26,10 +26,10 @@
             <td>{{ cliente.name }}</td>
             <td>{{ cliente.address }}</td>
             <td>{{ cliente.phone }}</td>
-            <td>
-              <a href="/editar-cliente/{{ cliente.id }}" class="btn btn-success btn-sm">Editar</a>
+            <td>{{ cliente.documento }}</td>
+            <!-- <td>
               <button class="btn rounded-pill btn-danger" onclick="eliminarCliente('{{ cliente.id }}');">Eliminar</button>
-            </td>
+            </td> -->
           </tr>
           {% endfor %}
         </tbody>

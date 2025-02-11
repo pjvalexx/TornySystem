@@ -17,7 +17,7 @@
               <label for="client_id" class="form-label">Cliente</label>
               <select name="client_id" class="form-select" required>
                 {% for cliente in clientes %}
-                <option value="{{ cliente.id }}">{{ cliente.name }} - {{ cliente.address }} - {{ cliente.phone }}</option>
+                <option value="{{ cliente.id }}">{{ cliente.name }} - {{ cliente.phone}}  {{ cliente.address}}</option>
                 {% endfor %}
               </select>
             </div>
@@ -49,7 +49,7 @@
           </div>
           <div class="row mt-2">
             <div class="col-md-6">
-              <label for="amount" class="form-label">Monto</label>
+              <label for="amount" class="form-label">Monto (BS)</label>
               <input type="number" name="amount" class="form-control" required />
             </div>
           </div>
